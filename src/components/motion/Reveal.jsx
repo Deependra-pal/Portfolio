@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
@@ -16,7 +16,7 @@ const Reveal = ({
   const containerRef = useRef(null);
   const prefersReducedMotion = useReducedMotion();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
@@ -35,7 +35,7 @@ const Reveal = ({
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top 88%", // triggers when top of element is 88% down the screen
-            toggleActions: "play none none none",
+            once: true,
           },
         }
       );

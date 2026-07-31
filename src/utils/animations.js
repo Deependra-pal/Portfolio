@@ -43,7 +43,7 @@ export const animateStaggeredReveal = (elements, options = {}) => {
       scrollTrigger: {
         trigger: trigger || elements[0],
         start: start,
-        toggleActions: "play none none none",
+        once: true,
       },
     }
   );

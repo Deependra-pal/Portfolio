@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -92,7 +92,7 @@ const Home = () => {
     { title: "Serverless Edge Rollouts", desc: "Deploying build scripts across 9 global edge node networks for sub-second responses." }
   ];
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // GSAP Context wrapper to handle clean scope cleanups
     const ctx = gsap.context(() => {
       

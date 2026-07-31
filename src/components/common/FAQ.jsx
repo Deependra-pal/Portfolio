@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 
-const FAQItem = ({ question, answer, isOpen, onToggle, index }) => {
+const FAQItem = memo(({ question, answer, isOpen, onToggle, index }) => {
   return (
     <div className="border-b border-zinc-200/60 last:border-0 py-6">
       <button
@@ -45,14 +45,14 @@ const FAQItem = ({ question, answer, isOpen, onToggle, index }) => {
       </div>
     </div>
   );
-};
+});
 
 const FAQ = ({ faqs = [] }) => {
   const [openIndex, setOpenIndex] = useState(0); // open first item by default like mockup
 
-  const handleToggle = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  const handleToggle = useCallback((index) => {
+    setOpenIndex((prevIndex) => (prevIndex === index ? null : index));
+  }, []);
 
   if (!faqs.length) return null;
 

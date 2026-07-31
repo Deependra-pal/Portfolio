@@ -1,50 +1,47 @@
 import Section from "../ui/Section";
 import SectionHeading from "../ui/SectionHeading";
+import Card from "../ui/Card";
 import Icon from "../ui/Icon";
-import { serviceGroups } from "../../data/company";
+import { aboutDetails } from "../../data/company";
 
 const WhatWeDo = () => (
-  <Section id="what-we-do" className="bg-white">
+  <Section id="expertise" className="bg-slate-50 border-y border-slate-100">
     <SectionHeading
       align="center"
-      eyebrow="What We Do"
-      title="Capabilities across the digital lifecycle"
-      description="From the first line of code to the campaign that gets you seen — the services our teams deliver."
+      eyebrow="Our Expertise"
+      title="Advanced capabilities across channels"
+      description="We bring high-end engineering practices and growth analytics to modern software teams."
       className="mb-14"
     />
 
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {serviceGroups.map((group) => (
-        <article
-          key={group.key}
-          data-animate="card"
-          className="group flex flex-col rounded-2xl border border-slate-200/80 bg-white p-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-100/60"
-        >
-          <span className="grid h-12 w-12 place-items-center rounded-xl bg-indigo-600/10 text-indigo-600 transition-colors duration-300 group-hover:bg-indigo-600 group-hover:text-white">
-            <Icon name={group.icon} className="h-6 w-6" />
-          </span>
+    <div className="grid gap-6 sm:grid-cols-2">
+      {aboutDetails.expertise.map((exp, idx) => {
+        // Choose appropriate icon based on index
+        let iconName = "sparkles";
+        if (idx === 0) iconName = "globe";
+        else if (idx === 1) iconName = "phone";
+        else if (idx === 2) iconName = "megaphone";
 
-          <h3 className="mt-6 text-lg font-semibold text-slate-900">
-            {group.label}
-          </h3>
-
-          <ul className="mt-4 space-y-2.5">
-            {group.items.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-2.5 text-sm text-slate-600"
-              >
-                <Icon
-                  name="check"
-                  className="mt-0.5 h-4 w-4 shrink-0 text-indigo-500"
-                  strokeWidth={2.4}
-                />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </article>
-      ))}
+        return (
+          <Card
+            key={exp.title}
+            interactive
+            className="flex gap-5 border border-slate-200 bg-white p-6 sm:p-8"
+          >
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-indigo-600/10 text-indigo-600">
+              <Icon name={iconName} className="h-6 w-6" />
+            </span>
+            <div>
+              <h3 className="text-lg font-bold text-slate-900 leading-tight">
+                {exp.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base">
+                {exp.description}
+              </p>
+            </div>
+          </Card>
+        );
+      })}
     </div>
   </Section>
 );

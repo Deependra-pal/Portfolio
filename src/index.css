@@ -1,20 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  
+  /* Brand Accent Colors - Ocean Cosmic Steel Navy Theme */
+  --color-slate-950: #080c16; /* Canvas Cosmic Midnight Navy */
+  --color-slate-900: #111a30; /* Card Steel Navy Surface */
+  --color-slate-800: #1c2a4a; /* High Contrast Border Navy */
+  
+  --color-brand-emerald: #10b981; /* High Uptime Emerald */
+  --color-brand-cyan: #38bdf8; /* Ocean Sky Blue */
+  --color-brand-blue: #4f46e5; /* Royal Indigo */
+  --color-brand-rose: #f43f5e;
+  
+  /* Animations */
+  --animate-pulse-slow: pulse 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-html,
-body,
-#root {
-  height: 100%;
-  width: 100%;
+/* Base resets & styles */
+html {
+  scroll-behavior: smooth;
+  background-color: #080c16;
+  color: #f3f4f6;
 }
 
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: #080c16;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background-color: rgba(56, 189, 248, 0.3);
+  color: #ffffff;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #080c16;
+}
+::-webkit-scrollbar-thumb {
+  background: #1c2a4a;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2b3e6c;
+}
+
+/* 1. SaaS Glow Grid Background */
+.bg-grid-saas {
+  background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* 2. High Contrast SaaS Cards */
+.saas-card {
+  background-color: #111a30;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  border-radius: 20px;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.saas-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  background-color: #16223f;
+  box-shadow: 0 12px 40px rgba(56, 189, 248, 0.06);
+  transform: translateY(-3px);
+}
+
+/* Pill Button Styles */
+.btn-saas-primary {
+  background-image: linear-gradient(135deg, #38bdf8 0%, #4f46e5 100%);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
+}
+
+.btn-saas-primary:hover {
+  opacity: 0.95;
+  box-shadow: 0 6px 24px rgba(56, 189, 248, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-saas-secondary {
+  background-color: #111a30;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f3f4f6;
+  font-family: var(--font-display);
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+}
+
+.btn-saas-secondary:hover {
+  background-color: #16223f;
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Gradient Text styles */
+.gradient-saas-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(135deg, #ffffff 30%, #93c5fd 70%, #38bdf8 100%);
+}
+
+/* Rounded square badge tags */
+.saas-badge {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background-color: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
 }

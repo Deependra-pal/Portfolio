@@ -7,7 +7,9 @@ import Icon from "../ui/Icon";
 import FAQ from "./FAQ";
 import ProjectCard from "./ProjectCard";
 import Reveal from "../motion/Reveal";
+import TiltCard from "../motion/TiltCard";
 import { contact } from "../../data/company";
+
 import { projectsData } from "../../data/projects";
 
 const EnterpriseServicePage = ({ service }) => {
@@ -157,17 +159,20 @@ const EnterpriseServicePage = ({ service }) => {
         <div className="grid gap-6 sm:grid-cols-2 text-white">
           {service.features.map((feature, idx) => (
             <Reveal key={feature.title} y={15} delay={idx * 0.1}>
-              <div className="saas-card p-6 sm:p-8 flex gap-5 bg-[#0a2522] border-0 rounded-2xl">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded border border-teal-900 bg-[#061a17] text-teal-350">
-                  <Icon name={feature.icon || "sparkles"} className="h-5 w-5" />
-                </span>
-                <div>
-                  <h3 className="text-base font-bold text-white leading-tight font-display">{feature.title}</h3>
-                  <p className="mt-2 text-xs leading-relaxed text-zinc-350">{feature.description}</p>
+              <TiltCard maxTilt={6} scale={1.015} className="h-full">
+                <div className="saas-card p-6 sm:p-8 flex gap-5 bg-[#0a2522] border-0 rounded-2xl h-full">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded border border-teal-900 bg-[#061a17] text-teal-350">
+                    <Icon name={feature.icon || "sparkles"} className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h3 className="text-base font-bold text-white leading-tight font-display">{feature.title}</h3>
+                    <p className="mt-2 text-xs leading-relaxed text-zinc-350">{feature.description}</p>
+                  </div>
                 </div>
-              </div>
+              </TiltCard>
             </Reveal>
           ))}
+
         </div>
       </Section>
 

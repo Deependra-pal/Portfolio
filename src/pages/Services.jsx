@@ -5,7 +5,9 @@ import SectionHeading from "../components/ui/SectionHeading";
 import Icon from "../components/ui/Icon";
 import Button from "../components/ui/Button";
 import Reveal from "../components/motion/Reveal";
+import TiltCard from "../components/motion/TiltCard";
 import { contact } from "../data/company";
+
 
 const Services = () => {
   const serviceCategories = [
@@ -110,58 +112,61 @@ const Services = () => {
         <div className="grid gap-8 sm:grid-cols-2 lg:gap-10">
           {serviceCategories.map((cat, idx) => (
             <Reveal key={cat.title} y={15} delay={idx * 0.08}>
-              <div className="glass-card p-6 sm:p-8 lg:p-10 flex flex-col justify-between h-full group border-white/10 rounded-3xl shadow-2xl neon-glow-teal">
-                <div>
-                  <div className="flex items-center gap-4">
-                    <span className="grid h-9 w-9 place-items-center rounded-lg bg-teal-950/40 text-teal-400 border border-teal-900/30">
-                      <Icon name={cat.icon} className="h-5.5 w-5.5" />
-                    </span>
-                    <div>
-                      <h3 className="text-base font-bold text-white font-display">
-                        {cat.title}
-                      </h3>
-                      <p className="text-[9px] font-bold text-[#c5e32b] tracking-wider uppercase font-mono mt-0.5">
-                        {cat.subtitle}
-                      </p>
+              <TiltCard maxTilt={8} scale={1.015} className="h-full">
+                <div className="glass-card p-6 sm:p-8 lg:p-10 flex flex-col justify-between h-full group border-white/10 rounded-3xl shadow-2xl neon-glow-teal">
+                  <div>
+                    <div className="flex items-center gap-4">
+                      <span className="grid h-9 w-9 place-items-center rounded-lg bg-teal-950/40 text-teal-400 border border-teal-900/30">
+                        <Icon name={cat.icon} className="h-5.5 w-5.5" />
+                      </span>
+                      <div>
+                        <h3 className="text-base font-bold text-white font-display">
+                          {cat.title}
+                        </h3>
+                        <p className="text-[9px] font-bold text-[#c5e32b] tracking-wider uppercase font-mono mt-0.5">
+                          {cat.subtitle}
+                        </p>
+                      </div>
                     </div>
+
+                    <ul className="mt-8 space-y-3.5">
+                      {cat.items.map((item) => (
+                        <li key={item} className="flex items-start gap-3 text-xs text-zinc-300 leading-normal font-semibold">
+                          <Icon name="check" className="h-4 w-4 shrink-0 text-[#c5e32b] mt-0.5" strokeWidth={2.4} />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  <ul className="mt-8 space-y-3.5">
-                    {cat.items.map((item) => (
-                      <li key={item} className="flex items-start gap-3 text-xs text-zinc-300 leading-normal font-semibold">
-                        <Icon name="check" className="h-4 w-4 shrink-0 text-[#c5e32b] mt-0.5" strokeWidth={2.4} />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                  <div className="mt-10 border-t border-white/5 pt-6 flex items-center justify-between font-display">
+                    {cat.hasDetailPage ? (
+                      <Button
+                        as={Link}
+                        to={`/${cat.slug}`}
+                        style={{ clipPath: "polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%)" }}
+                        className="btn-saas-primary text-xs px-5 py-2.5 rounded-md font-bold bg-[#c5e32b] text-zinc-950 border-0"
+                      >
+                        Explore details
+                      </Button>
+                    ) : (
+                      <span className="text-[9px] font-bold text-zinc-400 uppercase font-mono">
+                        // {cat.footerNote}
+                      </span>
+                    )}
 
-                <div className="mt-10 border-t border-white/5 pt-6 flex items-center justify-between font-display">
-                  {cat.hasDetailPage ? (
-                    <Button
-                      as={Link}
-                      to={`/${cat.slug}`}
-                      style={{ clipPath: "polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%)" }}
-                      className="btn-saas-primary text-xs px-5 py-2.5 rounded-md font-bold bg-[#c5e32b] text-zinc-950 border-0"
+                    <Link
+                      to="/contact"
+                      className="text-xs font-semibold text-[#c5e32b] hover:text-[#b0cc20] transition"
                     >
-                      Explore details
-                    </Button>
-                  ) : (
-                    <span className="text-[9px] font-bold text-zinc-400 uppercase font-mono">
-                      // {cat.footerNote}
-                    </span>
-                  )}
-
-                  <Link
-                    to="/contact"
-                    className="text-xs font-semibold text-[#c5e32b] hover:text-[#b0cc20] transition"
-                  >
-                    Inquire Project &rarr;
-                  </Link>
+                      Inquire Project &rarr;
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              </TiltCard>
             </Reveal>
           ))}
+
         </div>
       </Section>
 

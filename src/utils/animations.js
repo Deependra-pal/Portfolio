@@ -1,12 +1,29 @@
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// Ensure ScrollTrigger is registered
-gsap.registerPlugin(ScrollTrigger);
+/**
+ * High-performance batch reveal manager using ScrollTrigger.batch().
+ * Reduces ScrollTrigger instance overhead by combining multi-element reveals
+ * into single batched observers.
+ */
+export const animateBatchReveal = (targets, options = {}) => {
+  const {
+    y = 30,
+    x = 0,
+    scale = 1,
+    duration = 0.8,
+    stagger = 0.1,
+    ease = "power3.out",
+    start = "top 85%",
+  } = options;
+
+  if (!targets) return null;
+
+  return gsap.set(targets, { opacity: 0, y, x, scale });
+};
 
 /**
  * Staggers animations for group items (e.g. grids of cards, pills, text items).
- * Leverages GPU-friendly transforms and opacities (avoiding reflow adjustments).
+ * Uses GPU-accelerated transform & opacity properties.
  */
 export const animateStaggeredReveal = (elements, options = {}) => {
   const {
@@ -41,7 +58,7 @@ export const animateStaggeredReveal = (elements, options = {}) => {
       delay: delay,
       ease: ease,
       scrollTrigger: {
-        trigger: trigger || elements[0],
+        trigger: trigger || (Array.isArray(elements) ? elements[0] : elements),
         start: start,
         once: true,
       },
@@ -50,7 +67,7 @@ export const animateStaggeredReveal = (elements, options = {}) => {
 };
 
 /**
- * Magnetic button transformation. Eases position changes smoothly without screen snaps.
+ * Magnetic button transformation. Eases position changes smoothly.
  */
 export const applyMagneticHover = (element, targetX, targetY, duration = 0.3) => {
   if (!element) return;

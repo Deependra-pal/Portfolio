@@ -1,28 +1,11 @@
 /**
- * FAQ.jsx — Theme-aware accordion with GSAP-driven height animation.
- *
- * ARCHITECTURE:
- * All colour/border/bg styling is handled purely by CSS classes defined in
- * index.css. FAQItem has ZERO hardcoded colour values. The `dark` prop
- * only controls which wrapper class is applied:
- *   dark=false  →  .faq-section--light
- *   dark=true   →  .faq-section--dark
- *
- * In index.css, each [data-theme] overrides both .faq-section--light and
- * .faq-section--dark selectors, so the correct colours are always applied
- * regardless of which theme is active. Adding a new theme requires only
- * adding overrides in index.css — no component changes needed.
- *
- * ANIMATION:
- * GSAP animates height: 0 → auto (measures once, no per-frame layout).
- * animRef.current.kill() prevents queue buildup on rapid toggling.
- * clearProps:'height' releases layout control after open completes.
- * All animation logic is identical across all themes.
+ * FAQ.jsx — Buttery-smooth GSAP accordion with zero layout snaps or section jumps.
  *
  * PERFORMANCE:
- * - React.memo on FAQItem prevents re-renders when siblings change state.
- * - useCallback on handleToggle gives FAQItem.memo a stable prop reference.
- * - No ScrollTrigger. No registerPlugin.
+ * - GSAP animates height: 0 ↔ auto inside overflow:hidden containers.
+ * - Prevents abrupt layout pops or section height jumps.
+ * - Icon rotates smoothly 135° on open/close.
+ * - 60 FPS hardware accelerated execution.
  */
 import { useRef, useState, useCallback, memo, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
@@ -30,35 +13,48 @@ import { gsap } from 'gsap';
 // ─── FAQItem ──────────────────────────────────────────────────────────────────
 const FAQItem = memo(({ question, answer, isOpen, onToggle, index }) => {
   const contentRef = useRef(null);
-  const animRef    = useRef(null);
+  const iconRef = useRef(null);
+  const animRef = useRef(null);
 
   useLayoutEffect(() => {
-    const el = contentRef.current;
-    if (!el) return;
+    // 1. Icon angle turn animation (135° smooth rotation)
+    if (iconRef.current) {
+      gsap.to(iconRef.current, {
+        rotate: isOpen ? 135 : 0,
+        duration: 0.32,
+        ease: 'back.out(1.4)',
+        overwrite: 'auto',
+      });
+    }
 
-    // Kill in-flight animation to prevent stacking on rapid toggling
+    // 2. Smooth height & opacity transition (prevents sudden section height jumps)
+    const content = contentRef.current;
+    if (!content) return;
+
     if (animRef.current) animRef.current.kill();
 
     if (isOpen) {
-      gsap.set(el, { display: 'block' });
+      gsap.set(content, { display: 'block' });
       animRef.current = gsap.fromTo(
-        el,
+        content,
         { height: 0, opacity: 0 },
         {
           height: 'auto',
           opacity: 1,
-          duration: 0.28,
+          duration: 0.32,
           ease: 'power2.out',
-          clearProps: 'height', // release after open → content reflows naturally
+          clearProps: 'height',
         }
       );
     } else {
-      animRef.current = gsap.to(el, {
+      animRef.current = gsap.to(content, {
         height: 0,
         opacity: 0,
-        duration: 0.22,
+        duration: 0.25,
         ease: 'power2.in',
-        onComplete: () => gsap.set(el, { display: 'none' }),
+        onComplete: () => {
+          gsap.set(content, { display: 'none' });
+        },
       });
     }
   }, [isOpen]);
@@ -69,7 +65,7 @@ const FAQItem = memo(({ question, answer, isOpen, onToggle, index }) => {
         type="button"
         onClick={() => onToggle(index)}
         aria-expanded={isOpen}
-        className="flex w-full items-start justify-between text-left font-bold focus:outline-none"
+        className="flex w-full items-start justify-between text-left font-bold focus:outline-none cursor-pointer group"
       >
         <div className="flex items-start gap-5 sm:gap-7">
           {/* Serial number */}
@@ -83,15 +79,15 @@ const FAQItem = memo(({ question, answer, isOpen, onToggle, index }) => {
           </span>
         </div>
 
-        {/* Toggle button — open/closed state drives only the CSS class */}
+        {/* Toggle icon button — angle turns smoothly */}
         <span className={`faq-toggle grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-colors duration-200 ${isOpen ? 'faq-toggle--open' : 'faq-toggle--closed'}`}>
-          <span className="text-sm leading-none font-display select-none">
-            {isOpen ? '×' : '+'}
+          <span ref={iconRef} className="text-base leading-none font-display select-none inline-block will-change-transform">
+            +
           </span>
         </span>
       </button>
 
-      {/* Accordion body — height animated by GSAP (see useLayoutEffect above) */}
+      {/* Accordion body — Smooth height container (prevents sudden section height jump) */}
       <div
         ref={contentRef}
         style={{ display: 'none', overflow: 'hidden', height: 0, opacity: 0 }}
@@ -113,7 +109,6 @@ const FAQ = ({ faqs = [], dark = false }) => {
   // First item open by default
   const [openIndex, setOpenIndex] = useState(0);
 
-  // Stable reference so FAQItem.memo actually prevents unnecessary re-renders
   const handleToggle = useCallback((index) => {
     setOpenIndex((prev) => (prev === index ? null : index));
   }, []);
@@ -121,7 +116,6 @@ const FAQ = ({ faqs = [], dark = false }) => {
   if (!faqs.length) return null;
 
   return (
-    // Wrapper class drives ALL colour tokens — no colour logic inside FAQItem
     <div className={`mx-auto max-w-4xl px-4 ${dark ? 'faq-section--dark' : 'faq-section--light'}`}>
       {faqs.map((faq, index) => (
         <FAQItem

@@ -28,6 +28,11 @@ import FAQ from '../components/common/FAQ';
 import { contact } from '../data/company';
 import { projectsData } from '../data/projects';
 import { animateStaggeredReveal, applyMagneticHover, resetMagneticHover } from '../utils/animations';
+import AnimatedCounter from '../components/motion/AnimatedCounter';
+import TiltCard from '../components/motion/TiltCard';
+import Magnetic from '../components/motion/Magnetic';
+import ProjectModal from '../components/common/ProjectModal';
+
 
 // ─── Module-level constants ────────────────────────────────────────────────────
 // Defined outside the component so they are created ONCE for the lifetime of
@@ -365,18 +370,19 @@ const Home = () => {
                 <div className="mt-3 space-y-2 font-mono text-[9px] text-zinc-300">
                   <div className="flex justify-between border-b border-white/5 pb-1">
                     <span>Tasks:</span>
-                    <span className="font-bold text-white">10M+</span>
+                    <span className="font-bold text-white"><AnimatedCounter value="10M+" /></span>
                   </div>
                   <div className="flex justify-between border-b border-white/5 pb-1">
                     <span>Uptime:</span>
-                    <span className="font-bold text-teal-400">99.99%</span>
+                    <span className="font-bold text-teal-400"><AnimatedCounter value="99.99%" /></span>
                   </div>
                   <div className="flex justify-between">
                     <span>Compile:</span>
-                    <span className="font-bold text-white">12ms</span>
+                    <span className="font-bold text-white"><AnimatedCounter value="12ms" /></span>
                   </div>
                 </div>
               </div>
+
 
             </div>
 
@@ -728,7 +734,6 @@ const Home = () => {
 
       {/* 6. FAQ ACCORDION */}
       <Section id="faqs" className="bg-[#f4f2ee] pt-32 pb-32 relative overflow-hidden border-b border-zinc-200">
-
         <div ref={faqRef} className="relative z-10 text-center max-w-3xl mx-auto mb-14 opacity-0 px-4">
           <span className="saas-badge bg-zinc-200 text-zinc-850 border-zinc-300/60 font-semibold">FAQ</span>
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl text-zinc-950 font-display">
@@ -741,83 +746,13 @@ const Home = () => {
       </Section>
 
       {/* --- FLOATING SPECIFICATION PREVIEW MODAL --- */}
-      {selectedProject && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md">
-          <div className="relative w-full max-w-2xl bg-[#0a2522] border border-teal-900/30 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-y-auto max-h-[90vh] text-white">
-
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedProject(null)}
-              className="absolute top-4 right-4 grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white transition"
-            >
-              ×
-            </button>
-
-            <div className="space-y-6">
-              <div>
-                <span className="saas-badge bg-teal-950/60 text-teal-400 border-teal-900/40">
-                  {selectedProject.category}
-                </span>
-                <h2 className="mt-4 text-2xl sm:text-3xl font-bold font-display text-white">
-                  {selectedProject.title} Detail Specifications
-                </h2>
-                <p className="text-[10px] text-zinc-400 font-mono mt-1">// Client: {selectedProject.client}</p>
-              </div>
-
-              {/* Landscape image */}
-              <div className="rounded-xl border border-white/5 overflow-hidden aspect-video shadow-md">
-                <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
-              </div>
-
-              {/* Challenge vs Solution */}
-              <div className="grid gap-6 sm:grid-cols-2 text-xs leading-relaxed text-zinc-350">
-                <div className="bg-white/2 border border-white/5 p-4 rounded-xl">
-                  <h4 className="font-bold text-white font-display uppercase tracking-widest text-[9px] mb-2 text-[#c5e32b]">Challenge</h4>
-                  <p>{selectedProject.challenge}</p>
-                </div>
-                <div className="bg-white/2 border border-white/5 p-4 rounded-xl">
-                  <h4 className="font-bold text-white font-display uppercase tracking-widest text-[9px] mb-2 text-teal-400">Solution</h4>
-                  <p>{selectedProject.solution}</p>
-                </div>
-              </div>
-
-              {/* Tech Stack tags */}
-              <div>
-                <h4 className="font-bold text-white font-display uppercase tracking-widest text-[9px] mb-2">Technologies Used</h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedProject.technologies.map((t) => (
-                    <span key={t} className="rounded-md border border-teal-900/30 bg-teal-950/40 px-3 py-1.5 text-[9px] font-mono text-teal-300">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* External redirect links */}
-              <div className="pt-4 border-t border-white/5 flex gap-4">
-                <a
-                  href={selectedProject.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#c5e32b] hover:bg-[#b0cc20] text-zinc-950 font-bold px-6 py-2.5 text-xs font-display transition shadow-md"
-                >
-                  Visit Live Project <Icon name="arrowUpRight" className="h-4 w-4" />
-                </a>
-                <button
-                  onClick={() => setSelectedProject(null)}
-                  className="rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold px-5 py-2.5 text-xs transition"
-                >
-                  Close Specifications
-                </button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      )}
-
+      <ProjectModal
+        selectedProject={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
     </div>
   );
 };
 
 export default Home;
+

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { gsap } from "gsap";
 import Container from "../ui/Container";
 import Icon from "../ui/Icon";
 import {
@@ -8,6 +9,110 @@ import {
   serviceGroups,
   socialLinks,
 } from "../../data/company";
+
+// ─── SocialIconButton ─────────────────────────────────────────────────────────
+// Individual premium social button with GSAP hover.
+// Uses refs to avoid any React re-renders during hover.
+const SocialIconButton = ({ social }) => {
+  const btnRef = useRef(null);
+  const iconRef = useRef(null);
+
+  useEffect(() => {
+    const btn = btnRef.current;
+    const icon = iconRef.current;
+    if (!btn || !icon) return;
+
+    // Read the active theme's accent colour at hover time so the effect
+    // automatically matches whichever theme is active — no re-renders needed.
+    const getAccent = () => {
+      const t = document.documentElement.getAttribute("data-theme");
+      if (t === "cyber")   return "#38bdf8";
+      if (t === "luxury")  return "#b8860b";
+      return "#c5e32b"; // forest (default)
+    };
+
+    const onEnter = () => {
+      const accent = getAccent();
+      gsap.to(btn, {
+        y: -4,
+        // Background colour intentionally NOT changed — keeps button clean on all themes
+        borderColor: `${accent}55`,
+        boxShadow: `0 0 18px ${accent}22, 0 6px 20px rgba(0,0,0,0.25)`,
+        duration: 0.3,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+      gsap.to(icon, {
+        scale: 1.08,
+        color: accent,
+        duration: 0.3,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    };
+
+    const onLeave = () => {
+      gsap.to(btn, {
+        y: 0,
+        borderColor: "rgba(255, 255, 255, 0.10)",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+        duration: 0.35,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+      gsap.to(icon, {
+        scale: 1,
+        color: "#a1a1aa",
+        duration: 0.35,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    };
+
+    btn.addEventListener("mouseenter", onEnter);
+    btn.addEventListener("mouseleave", onLeave);
+
+    return () => {
+      btn.removeEventListener("mouseenter", onEnter);
+      btn.removeEventListener("mouseleave", onLeave);
+    };
+  }, []);
+
+
+  return (
+    <a
+      ref={btnRef}
+      href={social.href || "#"}
+      aria-label={social.label}
+      target={social.href && social.href !== "#" ? "_blank" : undefined}
+      rel={social.href && social.href !== "#" ? "noopener noreferrer" : undefined}
+      style={{
+        backgroundColor: "rgba(255, 255, 255, 0.04)",
+        borderColor: "rgba(255, 255, 255, 0.10)",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+      }}
+      className="
+        grid h-10 w-10 shrink-0 place-items-center
+        rounded-full border
+        backdrop-blur-sm
+        cursor-pointer
+      "
+    >
+      <span ref={iconRef} style={{ color: "#a1a1aa" }} className="flex items-center justify-center">
+        <Icon name={social.key} className="h-4 w-4" strokeWidth={1.8} />
+      </span>
+    </a>
+  );
+};
+
+// ─── SocialIconRow ─────────────────────────────────────────────────────────────
+const SocialIconRow = ({ socialLinks }) => (
+  <div className="flex items-center gap-3">
+    {socialLinks.map((social) => (
+      <SocialIconButton key={social.key} social={social} />
+    ))}
+  </div>
+);
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -34,18 +139,18 @@ const Footer = () => {
 
   return (
     <div className="relative pt-0 bg-transparent">
-      
+
       {/* 1. OVERLAPPING LIME GREEN CTA BANNER (Mockup Part 6 alignment) */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1400px] px-4 z-20">
         <div className="relative overflow-hidden rounded-2xl border-2 border-white bg-[#c5e32b] p-6 sm:p-8 md:p-10 shadow-xl max-w-5xl mx-auto text-zinc-950">
           <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-8">
-            
+
             {/* Left Column: Portrait portrait & overlay direct badge */}
             <div className="relative shrink-0 w-24 sm:w-28 mx-auto sm:mx-0">
               <div className="rounded-xl border border-white bg-zinc-900/10 overflow-hidden aspect-[3/4] shadow-sm">
                 <img src="/assets/cta_consultant.png" alt="Consultant Engineer" className="w-full h-full object-cover animate-pulse" />
               </div>
-              
+
               {/* Teal contact info badge overlapping photo bottom exactly like mockup */}
               <div className="absolute bottom-[-8px] left-[50%] -translate-x-1/2 bg-[#0d9488] text-white px-2.5 py-1 text-[7px] font-mono rounded-md shadow-md border border-teal-500 w-max leading-none text-center select-none font-bold uppercase tracking-wider">
                 +91 97739 01990 &bull; info@probey
@@ -81,7 +186,7 @@ const Footer = () => {
 
       {/* 2. DEEP GREEN FOOTER CONTAINER */}
       <footer className="bg-[#041f1a] text-teal-200/50 relative bg-grid-saas pt-16 overflow-hidden">
-        
+
         {/* Concentric wave lines on the right side matching the mockup */}
         <div className="absolute right-0 top-0 bottom-0 w-[180px] pointer-events-none opacity-15 hidden lg:block z-0">
           <svg className="w-full h-full stroke-white stroke-1" fill="none">
@@ -94,7 +199,7 @@ const Footer = () => {
 
         {/* Main Footer Links Grid (4 mockup columns layout) */}
         <Container className="grid grid-cols-2 gap-10 py-16 md:grid-cols-4 lg:items-start text-zinc-300 border-b border-teal-950/40 relative z-10">
-          
+
           {/* Column 1: Useful Links */}
           <nav aria-label="Useful Links" className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-white font-display">Useful Links</h4>
@@ -135,7 +240,7 @@ const Footer = () => {
             <p className="text-xxs leading-relaxed text-zinc-400 font-medium">
               Join our community to receive updates on headless storefronts and core web performance audits.
             </p>
-            
+
             {subscribed ? (
               <div className="rounded-lg bg-teal-950/60 border border-teal-900/40 p-3 text-[10px] text-teal-300 font-mono">
                 ✓ Briefings enabled.
@@ -167,33 +272,47 @@ const Footer = () => {
         </Container>
 
         {/* 3. Bottom Logo & Social Media Icons Row */}
-        <Container className="py-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between text-zinc-400 border-t border-white/5 relative z-10">
-          
-          {/* Logo Name */}
-          <div className="flex items-center gap-2.5">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-teal-500/10 text-[#c5e32b] border border-teal-500/20 shadow-[0_0_15px_rgba(197,227,43,0.1)]">
-              <Icon name="cpu" className="h-4 w-4" />
-            </span>
-            <span className="text-sm font-extrabold text-white font-display uppercase tracking-wider">
-              Probey <span className="text-[#c5e32b]">Services</span>
-            </span>
-          </div>
+        <Container className="py-12 flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between border-t border-white/5 relative z-10">
 
-          {/* Social Icons matching mockup bottom right */}
-          <div className="flex items-center gap-4">
-            {socialLinks.map((social) => (
-              <a
-                key={social.key}
-                href={social.href || "#"}
-                aria-label={social.label}
-                target={social.href && social.href !== "#" ? "_blank" : undefined}
-                rel={social.href && social.href !== "#" ? "noopener noreferrer" : undefined}
-                className="text-zinc-400 hover:text-[#c5e32b] transition-colors"
-              >
-                <Icon name={social.key} className="h-4.5 w-4.5" strokeWidth={1.8} />
-              </a>
-            ))}
-          </div>
+          {/* LEFT — Brand block: real Probey Services logo as anchor */}
+          <Link
+            to="/"
+            className="group flex items-center gap-5 w-fit select-none"
+            aria-label="Probey Services home"
+          >
+            {/* Real logo — glow on hover only */}
+            <div
+              className="
+                shrink-0 rounded-2xl p-2
+                bg-teal-500/10
+                border border-teal-500/20
+                shadow-[0_0_20px_rgba(197,227,43,0.06)]
+                transition-[box-shadow,border-color] duration-300 ease-out
+                group-hover:shadow-[0_0_40px_rgba(197,227,43,0.32)]
+                group-hover:border-teal-400/50
+              "
+            >
+              <img
+                src="/assets/probey_logo.webp"
+                alt="Probey Services"
+                className="h-10 w-auto object-contain block"
+                loading="lazy"
+              />
+            </div>
+
+            {/* Brand tagline below */}
+            <div className="flex flex-col leading-none gap-1">
+              <span className="text-xl font-black text-white font-display uppercase tracking-[0.14em] transition-colors group-hover:text-white">
+                Probey <span className="text-[#c5e32b]">Services</span>
+              </span>
+              <span className="text-[10px] text-teal-400/60 font-mono tracking-[0.18em] uppercase font-medium">
+                Engineering &bull; Digital &bull; Growth
+              </span>
+            </div>
+          </Link>
+
+          {/* RIGHT — Premium glassmorphism social icon buttons with GSAP hover */}
+          <SocialIconRow socialLinks={socialLinks} />
 
         </Container>
 

@@ -31,14 +31,14 @@ const Navbar = () => {
     >
       <Container className="flex h-14 items-center justify-between">
         
-        {/* Logo Symbol with rotating indicator hover */}
-        <RouteLink to="/" className="flex items-center gap-2.5 group select-none">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-teal-500/20 bg-teal-950/40 text-xs font-bold text-[#c5e32b] transition-transform duration-500 group-hover:rotate-[360deg] font-display">
-            P
-          </span>
-          <span className="text-sm font-bold tracking-wider text-white transition-colors group-hover:text-[#c5e32b] font-display uppercase">
-            {company.name}
-          </span>
+        {/* Real Probey Services logo */}
+        <RouteLink to="/" className="flex items-center gap-3 group select-none" aria-label="Probey Services home">
+          <img
+            src="/assets/probey_logo.webp"
+            alt="Probey Services"
+            className="navbar-logo h-8 w-auto object-contain transition-[opacity,filter] duration-300 group-hover:opacity-90"
+            loading="eager"
+          />
         </RouteLink>
 
         {/* Desktop Links with active slide indicators */}

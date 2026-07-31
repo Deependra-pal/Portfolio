@@ -1,26 +1,96 @@
-import { useLayoutEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Container from "../components/ui/Container";
-import Section from "../components/ui/Section";
-import Button from "../components/ui/Button";
-import Icon from "../components/ui/Icon";
-import FAQ from "../components/common/FAQ";
-import { contact } from "../data/company";
-import { projectsData } from "../data/projects";
-import { animateStaggeredReveal, applyMagneticHover, resetMagneticHover } from "../utils/animations";
+/**
+ * Home.jsx — Performance-optimized home page.
+ *
+ * KEY OPTIMIZATIONS:
+ * 1. homeFaqs / TESTIMONIALS / MILESTONES are MODULE-LEVEL constants —
+ *    they are never recreated on renders. Previously inside the component
+ *    body they were reallocated on every state update.
+ * 2. filteredProjects uses useMemo — only recomputes when activeCategory changes.
+ * 3. handleCtaMouseMove / handleCtaMouseLeave use useCallback — stable refs,
+ *    prevents child div re-render propagation.
+ * 4. setActiveMilestone(idx) in onUpdate called 60x/sec. Replaced with direct
+ *    DOM manipulation via refs. Zero React renders during scroll.
+ * 5. animate-bounce → hero-float CSS keyframe (compositor thread, not JS).
+ * 6. animate-ping → status-ping CSS keyframe (compositor thread).
+ * 7. gsap.registerPlugin removed — called once in main.jsx.
+ * 8. Testimonial cards: transition-all → transition-[opacity,transform,filter]
+ *    (avoids repainting backdrop-filter on every slide change).
+ * 9. hero badge animate-pulse → CSS keyframe (compositor thread).
+ */
+import { useLayoutEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Container from '../components/ui/Container';
+import Section from '../components/ui/Section';
+import Icon from '../components/ui/Icon';
+import FAQ from '../components/common/FAQ';
+import { contact } from '../data/company';
+import { projectsData } from '../data/projects';
+import { animateStaggeredReveal, applyMagneticHover, resetMagneticHover } from '../utils/animations';
 
-// Register ScrollTrigger
-gsap.registerPlugin(ScrollTrigger);
+// ─── Module-level constants ────────────────────────────────────────────────────
+// Defined outside the component so they are created ONCE for the lifetime of
+// the module, not re-created on every render.
 
+const HOME_FAQS = [
+  {
+    question: 'What makes Probey Services different from standard digital agencies?',
+    answer: 'We construct custom architectures rather than cheap visual builders. We target sub-second load times and scale capabilities natively.',
+  },
+  {
+    question: 'Do you support global delivery?',
+    answer: 'Yes. With 9 offices across India, the US, UK, and Canada, we scale team alignments to match international time zones.',
+  },
+  {
+    question: 'How do we initiate a consultation?',
+    answer: 'Book a call directly through our Calendly calendar link or send an inquiry via our contact form.',
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    initials: 'SU',
+    partner: 'Sunasa E-Commerce Coordinator',
+    label: 'Verified Retail Partner • JKL Group',
+    quote: 'Probey Services replaced our heavy WordPress templates with a Next.js app. Our storefront load speed dropped under 300ms, and we supported traffic surges during promotion campaigns with zero server crashes.',
+  },
+  {
+    initials: 'SA',
+    partner: 'Samyakk Apparel CTO',
+    label: 'International Retail Client',
+    quote: 'The native iOS storefront application they compiled for our catalog query eliminated visual stutter completely, recovering mobile bounce rates and maximizing conversions.',
+  },
+  {
+    initials: 'PE',
+    partner: 'Perfumania CRM Director',
+    label: 'Fragrance Distribution Partner',
+    quote: 'Their API integration scripts sync our stock inventories in real time with under 1s delays. The abandoned cart checkouts raised automated revenue metrics instantly.',
+  },
+];
+
+const MILESTONES = [
+  { title: 'Deep Database Audits', desc: 'Verifying core index structures and resolving latency bottlenecks before writing logic.' },
+  { title: 'High-Fidelity Wireframes', desc: 'Locking down visual properties and layouts dynamically inside Figma drafts.' },
+  { title: 'Compiled React & Swift Code', desc: 'Developing production-ready modular repositories bypassing builder templates.' },
+  { title: 'Serverless Edge Rollouts', desc: 'Deploying build scripts across 9 global edge node networks for sub-second responses.' },
+];
+
+// ─── Component ─────────────────────────────────────────────────────────────────
 const Home = () => {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const [activeMilestone, setActiveMilestone] = useState(0);
 
-  // Section Refs for scroll reveals
+  // activeMilestone: tracked via ref + direct DOM update.
+  // Previously used useState which caused React to re-render 60x/sec during scroll.
+  const activeMilestoneRef = useRef(0);
+  const milestoneTextRef = useRef(null);
+  const milestoneProgressBarRef = useRef(null);
+  const milestoneDotsRef = useRef([]);
+  const milestoneCardsRef = useRef([]);
+
+  // Section Refs
   const mainWrapperRef = useRef(null);
   const heroRef = useRef(null);
   const titleWordsRef = useRef([]);
@@ -31,180 +101,168 @@ const Home = () => {
   const testimonialsRef = useRef(null);
   const faqRef = useRef(null);
 
-  // FAQs database
-  const homeFaqs = [
-    {
-      question: "What makes Probey Services different from standard digital agencies?",
-      answer: "We construct custom architectures rather than cheap visual builders. We target sub-second load times and scale capabilities natively."
-    },
-    {
-      question: "Do you support global delivery?",
-      answer: "Yes. With 9 offices across India, the US, UK, and Canada, we scale team alignments to match international time zones."
-    },
-    {
-      question: "How do we initiate a consultation?",
-      answer: "Book a call directly through our Calendly calendar link or send an inquiry via our contact form."
-    }
-  ];
-
-  // Projects filter logic
-  const filteredProjects = projectsData.filter((project) => {
-    if (activeCategory === "All") return true;
-    if (activeCategory === "E-Commerce") {
-      return project.id === "sunasa" || project.id === "gueka";
-    }
-    if (activeCategory === "Mobile") {
-      return project.id === "samyakk";
-    }
-    if (activeCategory === "APIs") {
-      return project.id === "perfumania" || project.id === "fragrantors-aroma";
-    }
-    return true;
-  });
-
-  // Testimonials database
-  const testimonials = [
-    {
-      initials: "SU",
-      partner: "Sunasa E-Commerce Coordinator",
-      label: "Verified Retail Partner & bull; JKL Group",
-      quote: "Probey Services replaced our heavy WordPress templates with a Next.js app. Our storefront load speed dropped under 300ms, and we supported traffic surges during promotion campaigns with zero server crashes."
-    },
-    {
-      initials: "SA",
-      partner: "Samyakk Apparel CTO",
-      label: "International Retail Client",
-      quote: "The native iOS storefront application they compiled for our catalog query eliminated visual stutter completely, recovering mobile bounce rates and maximizing conversions."
-    },
-    {
-      initials: "PE",
-      partner: "Perfumania CRM Director",
-      label: "Fragrance Distribution Partner",
-      quote: "Their API integration scripts sync our stock inventories in real time with under 1s delays. The abandoned cart checkouts raised automated revenue metrics instantly."
-    }
-  ];
-
-  // Milestones database
-  const milestones = [
-    { title: "Deep Database Audits", desc: "Verifying core index structures and resolving latency bottlenecks before writing logic." },
-    { title: "High-Fidelity Wireframes", desc: "Locking down visual properties and layouts dynamically inside Figma drafts." },
-    { title: "Compiled React & Swift Code", desc: "Developing production-ready modular repositories bypassing builder templates." },
-    { title: "Serverless Edge Rollouts", desc: "Deploying build scripts across 9 global edge node networks for sub-second responses." }
-  ];
+  // filteredProjects: memoized — only recomputes when activeCategory changes
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === 'All') return projectsData;
+    if (activeCategory === 'E-Commerce') return projectsData.filter((p) => p.id === 'sunasa' || p.id === 'gueka');
+    if (activeCategory === 'Mobile') return projectsData.filter((p) => p.id === 'samyakk');
+    if (activeCategory === 'APIs') return projectsData.filter((p) => p.id === 'perfumania' || p.id === 'fragrantors-aroma');
+    return projectsData;
+  }, [activeCategory]);
 
   useLayoutEffect(() => {
-    // GSAP Context wrapper to handle clean scope cleanups
     const ctx = gsap.context(() => {
-      
-      // 1. TOP SCROLL PROGRESS BAR LINKED TO VIEWPORT SCROLL (Optimized: scaleX)
+
+      // 1. SCROLL PROGRESS BAR — scrub linked to body scroll
       gsap.fromTo(
-        ".scroll-progress",
+        '.scroll-progress',
         { scaleX: 0 },
         {
           scaleX: 1,
-          transformOrigin: "left",
-          ease: "none",
+          transformOrigin: 'left',
+          ease: 'none',
           scrollTrigger: {
-            trigger: "body",
-            start: "top top",
-            end: "bottom bottom",
+            trigger: 'body',
+            start: 'top top',
+            end: 'bottom bottom',
             scrub: 0.15,
           },
         }
       );
 
-      // 2. HERO ENTRANCE MOVEMENT
-      const heroTl = gsap.timeline({ defaults: { ease: "power4.out" } });
+      // 2. HERO ENTRANCE — word-by-word stagger reveal
+      const heroTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
       if (titleWordsRef.current.length > 0) {
         heroTl.fromTo(
           titleWordsRef.current,
-          { y: "110%", opacity: 0 },
-          { y: "0%", opacity: 1, duration: 1.0, stagger: 0.06, delay: 0.2 }
+          { y: '110%', opacity: 0 },
+          { y: '0%', opacity: 1, duration: 1.0, stagger: 0.06, delay: 0.2 }
         );
       }
       heroTl.fromTo(
-        ".hero-fade-in",
+        '.hero-fade-in',
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 },
-        "-=0.6"
+        '-=0.6'
       );
 
-      // 4. BENTO SERVICES: STAGGER SCALE entrance on ScrollTrigger
-      animateStaggeredReveal(".bento-anim-card", {
+      // 3. BENTO SERVICES — stagger scale entrance
+      animateStaggeredReveal('.bento-anim-card', {
         scale: 0.9,
         duration: 0.9,
         stagger: 0.12,
-        ease: "back.out(1.2)",
-        start: "top 80%",
+        ease: 'back.out(1.2)',
+        start: 'top 80%',
         trigger: bentoGridRef.current,
       });
 
-      // 5. TIMELINE: SCROLL TRIGGER PIN & TRACE
+      // 4. MILESTONE TRACKER — direct DOM update (zero React re-renders during scroll)
       const milestonesEl = timelineRef.current;
       if (milestonesEl) {
         ScrollTrigger.create({
           trigger: milestonesEl,
-          start: "top center",
-          end: "bottom center",
+          start: 'top center',
+          end: 'bottom center',
           onUpdate: (self) => {
-            const progress = self.progress;
-            const idx = Math.min(Math.floor(progress * milestones.length), milestones.length - 1);
-            setActiveMilestone(idx);
+            const idx = Math.min(
+              Math.floor(self.progress * MILESTONES.length),
+              MILESTONES.length - 1
+            );
+            if (idx === activeMilestoneRef.current) return; // skip if same
+
+            activeMilestoneRef.current = idx;
+
+            // Update status text
+            if (milestoneTextRef.current) {
+              milestoneTextRef.current.textContent = `Timeline status: Step 0${idx + 1} active`;
+            }
+
+            // Update progress bar height
+            if (milestoneProgressBarRef.current) {
+              milestoneProgressBarRef.current.style.height = `${(idx / (MILESTONES.length - 1)) * 130}px`;
+            }
+
+            // Update milestone dot styles
+            milestoneDotsRef.current.forEach((dot, i) => {
+              if (!dot) return;
+              if (i <= idx) {
+                dot.className = 'grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-mono font-bold border transition-colors duration-300 bg-[#c5e32b] text-zinc-950 border-[#c5e32b] shadow-lg shadow-[#c5e32b]/20';
+              } else {
+                dot.className = 'grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-mono font-bold border transition-colors duration-300 bg-zinc-900 border-white/10 text-zinc-500';
+              }
+            });
+
+            // Update milestone dot label colors
+            milestoneDotsRef.current.forEach((dot, i) => {
+              if (!dot) return;
+              const label = dot.nextElementSibling?.querySelector('h4');
+              if (label) {
+                label.className = `text-xs font-bold font-display transition-colors ${i === idx ? 'text-[#c5e32b]' : 'text-zinc-400'}`;
+              }
+            });
+
+            // Update milestone cards
+            milestoneCardsRef.current.forEach((card, i) => {
+              if (!card) return;
+              if (i === idx) {
+                card.className = 'p-6 rounded-2xl border transition-colors duration-300 bg-white/5 border-[#c5e32b]/20 shadow-2xl';
+              } else {
+                card.className = 'p-6 rounded-2xl border transition-colors duration-300 bg-white/2 border-white/5 opacity-40';
+              }
+            });
           },
         });
       }
 
-      // 6. PROJECTS MASONRY: STAGGER GROUP REVEAL (GPU-friendly)
-      animateStaggeredReveal(".project-anim-card", {
+      // 5. PROJECTS — stagger reveal
+      animateStaggeredReveal('.project-anim-card', {
         y: 35,
         duration: 1.0,
         stagger: 0.15,
-        ease: "expo.out",
+        ease: 'expo.out',
         trigger: projectsGridRef.current,
-        start: "top 80%",
+        start: 'top 80%',
       });
 
-      // 7. TESTIMONIALS SLIDER: ROTATION Reveal Sweep
+      // 6. TESTIMONIALS — reveal sweep
       animateStaggeredReveal(testimonialsRef.current, {
         scale: 0.96,
         y: 20,
         duration: 1.2,
-        ease: "circ.out",
-        start: "top 82%",
+        ease: 'circ.out',
+        start: 'top 82%',
       });
 
-      // 8. FAQS: STAGGER ROW reveal
+      // 7. FAQS — stagger row reveal
       animateStaggeredReveal(faqRef.current, {
         y: 20,
         duration: 0.9,
-        ease: "power3.out",
-        start: "top 85%",
+        ease: 'power3.out',
+        start: 'top 85%',
       });
 
     }, mainWrapperRef);
 
-    return () => {
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
-  // CTA Magnetic Button hover coordinates computation
-  const handleCtaMouseMove = (e) => {
+  // Stable magnetic hover handlers (useCallback — no new function on every render)
+  const handleCtaMouseMove = useCallback((e) => {
     const btn = ctaBtnRef.current;
     if (!btn) return;
     const rect = btn.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
     applyMagneticHover(btn, x * 0.35, y * 0.35);
-  };
+  }, []);
 
-  const handleCtaMouseLeave = () => {
+  const handleCtaMouseLeave = useCallback(() => {
     resetMagneticHover(ctaBtnRef.current);
-  };
+  }, []);
 
   return (
     <div ref={mainWrapperRef} className="bg-[#030f0d] text-[#faf9f6] min-h-screen selection:bg-teal-500/20 relative">
-      
+
       {/* 1. TOP SCROLL PROGRESS BAR CONTAINER */}
       <div className="fixed top-0 left-0 h-1 bg-[#c5e32b] z-[1000] shadow-[0_0_8px_#c5e32b] scroll-progress w-full" />
 
@@ -221,21 +279,22 @@ const Home = () => {
 
         <Container className="relative z-10 w-full">
           <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] items-center">
-            
+
             {/* Left Column: Split Headline text reveals & magnetic button hovers */}
             <div className="space-y-8 text-left">
-              <span className="saas-badge bg-teal-950/40 text-teal-350 border-teal-800 select-none animate-pulse">
+              {/* hero-pulse: CSS keyframe on compositor thread — not JS animate-pulse */}
+              <span className="saas-badge bg-teal-950/40 text-teal-350 border-teal-800 select-none hero-pulse">
                 ● High-performance compiled software
               </span>
-              
+
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display leading-[1.05] tracking-tight text-white select-none">
-                {["We", "build", "digital", "systems", "that", "shape", "businesses."].map((word, idx) => (
+                {['We', 'build', 'digital', 'systems', 'that', 'shape', 'businesses.'].map((word, idx) => (
                   <span key={idx} className="inline-block overflow-hidden mr-2.5 pb-0 h-fit">
                     <span
                       ref={(el) => (titleWordsRef.current[idx] = el)}
                       className="inline-block transform translate-y-[110%] opacity-0"
                     >
-                      {word === "systems" ? (
+                      {word === 'systems' ? (
                         <span className="text-[#c5e32b] underline decoration-wavy decoration-[#c5e32b]/50">
                           systems
                         </span>
@@ -261,7 +320,7 @@ const Home = () => {
                   <Link
                     ref={ctaBtnRef}
                     to="/contact"
-                    style={{ clipPath: "polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%)" }}
+                    style={{ clipPath: 'polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%)' }}
                     className="inline-flex items-center justify-center bg-[#c5e32b] hover:bg-[#b0cc20] text-zinc-950 font-bold pl-6 pr-10 py-4 rounded-md text-xs font-display transition duration-300 shadow-lg"
                   >
                     Consult Engineering &rarr;
@@ -278,8 +337,8 @@ const Home = () => {
 
             {/* Right Column: Floating Panel graphics overlapping */}
             <div className="hero-fade-in relative w-full max-w-md lg:max-w-none mx-auto select-none opacity-0">
-              
-              {/* Main Portrait Frame with Parallax Parabolic layout */}
+
+              {/* Main Portrait Frame */}
               <div className="rounded-3xl border border-white/10 bg-white/5 p-2 shadow-[0_20px_50px_rgba(13,148,136,0.15)] overflow-hidden aspect-[4/3] max-h-[340px] hover-scale">
                 <img
                   src="/assets/hero_engineer.png"
@@ -288,10 +347,11 @@ const Home = () => {
                 />
               </div>
 
-              {/* Floating Tag 1: Git Branch / Edge Deploy Sync Tag */}
-              <div className="absolute top-6 -left-6 glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-2xl border-white/10 select-none animate-bounce" style={{ animationDuration: "6s" }}>
-                <span className="flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-teal-500/20">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#c5e32b] animate-ping" />
+              {/* Floating Tag 1: Git Branch — hero-float runs on compositor thread */}
+              <div className="absolute top-6 -left-6 glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-2xl border-white/10 select-none hero-float">
+                <span className="flex h-2.5 w-2.5 shrink-0 relative items-center justify-center rounded-full bg-teal-500/20">
+                  <span className="status-ping absolute inline-flex h-full w-full rounded-full bg-[#c5e32b] opacity-75" />
+                  <span className="relative h-1.5 w-1.5 rounded-full bg-[#c5e32b]" />
                 </span>
                 <div className="font-mono text-[8px] text-zinc-350">
                   <p className="font-bold text-white uppercase tracking-wider">Deploy: main branch</p>
@@ -324,13 +384,11 @@ const Home = () => {
         </Container>
       </section>
 
-      {/* 2. SERVICES BENTO (Frosted glass panels + ambient lighting + background watermark) */}
+      {/* 2. SERVICES BENTO */}
       <Section id="services" className="bg-[#030f0d] py-32 border-b border-white/5 text-white relative overflow-hidden">
-        
-        {/* Soft Ambient Background Mesh */}
+
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_30%,rgba(197,227,43,0.04)_0%,transparent_50%)] z-0" />
-        
-        {/* Large watermark typography */}
+
         <div className="absolute right-0 top-1/4 text-[11vw] font-extrabold font-display text-white/[0.015] pointer-events-none uppercase select-none z-0 tracking-widest">
           Services
         </div>
@@ -345,7 +403,7 @@ const Home = () => {
           <div>
             <Link
               to="/services"
-              style={{ clipPath: "polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%)" }}
+              style={{ clipPath: 'polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%)' }}
               className="inline-flex items-center justify-center bg-[#c5e32b] hover:bg-[#b0cc20] text-zinc-950 font-bold pl-5 pr-8 py-2.5 rounded-md text-xxs font-display transition duration-300 shadow-sm"
             >
               All Capabilities &rarr;
@@ -355,7 +413,7 @@ const Home = () => {
 
         {/* Bento Grid */}
         <div ref={bentoGridRef} className="relative z-10 grid gap-6 md:grid-cols-12 max-w-[1400px] mx-auto px-4">
-          
+
           {/* Card 1: Headless Web (Col span 7) */}
           <div className="glass-card p-8 md:col-span-7 flex flex-col justify-between min-h-[320px] neon-glow-teal cursor-default bento-anim-card opacity-0">
             <div>
@@ -427,53 +485,50 @@ const Home = () => {
         </div>
       </Section>
 
-      {/* 3. TIMELINE & VALUE (Active Progress milestone scroll indicator with overlapping tags) */}
+      {/* 3. TIMELINE & VALUE */}
       <Section id="promise" className="bg-[#061a17] py-32 border-b border-white/5 text-white relative overflow-hidden">
-        
-        {/* Ambient background glow */}
+
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_80%_60%,rgba(13,148,136,0.05)_0%,transparent_50%)] z-0" />
-        
-        {/* Large watermark text */}
+
         <div className="absolute left-0 bottom-1/4 text-[11vw] font-extrabold font-display text-white/[0.015] pointer-events-none uppercase select-none z-0 tracking-widest">
           Promise
         </div>
 
         <div ref={timelineRef} className="relative z-10 grid gap-16 lg:grid-cols-[0.8fr_1.2fr] max-w-[1400px] mx-auto items-center px-4">
-          
+
           {/* Left Column: Interactive Milestone Visual Indicator */}
           <div className="space-y-8 lg:sticky lg:top-40 relative">
             <span className="saas-badge bg-white/5 text-[#c5e32b] border-white/10">Verification</span>
             <h2 className="text-3xl font-extrabold tracking-tight sm:text-5xl text-white font-display leading-tight">
               Our Promise to You
             </h2>
-            <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider font-mono">
-              Timeline status: Step 0{activeMilestone + 1} active
+            {/* Direct DOM text update — no React re-render on scroll */}
+            <p ref={milestoneTextRef} className="text-xs text-zinc-400 font-bold uppercase tracking-wider font-mono">
+              Timeline status: Step 01 active
             </p>
 
             {/* Vertical timeline trace graphic */}
             <div className="relative flex items-center gap-6 border border-white/5 bg-white/2 rounded-2xl p-6 shadow-2xl max-w-md">
               <div className="absolute left-10 top-12 bottom-12 w-0.5 bg-white/5 z-0" />
-              
-              {/* Dynamic scroll progress highlights */}
+
+              {/* Progress bar — height updated via ref, not React state */}
               <div
-                className="absolute left-10 top-12 w-0.5 bg-[#c5e32b] transition-all duration-300 z-10"
-                style={{ height: `${(activeMilestone / (milestones.length - 1)) * 130}px` }}
+                ref={milestoneProgressBarRef}
+                className="absolute left-10 top-12 w-0.5 bg-[#c5e32b] z-10"
+                style={{ height: '0px', transition: 'height 0.3s ease' }}
               />
 
               <div className="space-y-8 w-full z-20">
-                {milestones.map((item, idx) => (
+                {MILESTONES.map((item, idx) => (
                   <div key={item.title} className="flex items-center gap-5">
                     <span
-                      className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-mono font-bold transition-all duration-300 border ${
-                        idx <= activeMilestone
-                          ? "bg-[#c5e32b] text-zinc-950 border-[#c5e32b] shadow-lg shadow-[#c5e32b]/20"
-                          : "bg-zinc-900 border-white/10 text-zinc-500"
-                      }`}
+                      ref={(el) => (milestoneDotsRef.current[idx] = el)}
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-mono font-bold border transition-colors duration-300 bg-zinc-900 border-white/10 text-zinc-500"
                     >
                       ✓
                     </span>
                     <div>
-                      <h4 className={`text-xs font-bold font-display transition-colors ${idx === activeMilestone ? "text-[#c5e32b]" : "text-zinc-400"}`}>
+                      <h4 className="text-xs font-bold font-display transition-colors text-zinc-400">
                         {item.title}
                       </h4>
                     </div>
@@ -482,8 +537,8 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Floating Overlapping Tag: System Audits Analytics */}
-            <div className="absolute -bottom-10 -right-4 glass-card p-4 rounded-xl border border-white/10 shadow-2xl flex items-center gap-3 max-w-[190px] animate-bounce z-30" style={{ animationDuration: "7s" }}>
+            {/* Floating Overlapping Tag — hero-float-delayed: CSS keyframe */}
+            <div className="absolute -bottom-10 -right-4 glass-card p-4 rounded-xl border border-white/10 shadow-2xl flex items-center gap-3 max-w-[190px] hero-float-delayed z-30">
               <span className="grid h-7 w-7 place-items-center rounded-lg bg-teal-950/40 text-teal-400 border border-teal-900/30">
                 <Icon name="check" className="h-4 w-4" />
               </span>
@@ -502,14 +557,11 @@ const Home = () => {
             </p>
 
             <div className="space-y-6 font-sans">
-              {milestones.map((item, idx) => (
+              {MILESTONES.map((item, idx) => (
                 <div
                   key={idx}
-                  className={`p-6 rounded-2xl border transition-all duration-300 ${
-                    idx === activeMilestone
-                      ? "bg-white/5 border-[#c5e32b]/20 shadow-2xl"
-                      : "bg-white/2 border-white/5 opacity-40"
-                  }`}
+                  ref={(el) => (milestoneCardsRef.current[idx] = el)}
+                  className="p-6 rounded-2xl border transition-colors duration-300 bg-white/2 border-white/5 opacity-40"
                 >
                   <h3 className="text-base font-bold text-white font-display">
                     0{idx + 1} / {item.title}
@@ -527,11 +579,9 @@ const Home = () => {
 
       {/* 4. ASYMMETRIC MASONRY PROJECTS GRID & CATEGORY FILTER */}
       <Section id="projects" className="bg-[#030f0d] py-32 border-b border-white/5 relative overflow-hidden">
-        
-        {/* Soft Ambient Background Mesh */}
+
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_30%,rgba(197,227,43,0.03)_0%,transparent_55%)] z-0" />
 
-        {/* Large watermark text */}
         <div className="absolute left-10 top-1/3 text-[11vw] font-extrabold font-display text-white/[0.015] pointer-events-none uppercase select-none z-0 tracking-widest">
           Works
         </div>
@@ -546,15 +596,15 @@ const Home = () => {
 
           {/* Category Filter Navigation */}
           <div className="flex flex-wrap gap-2 relative z-20">
-            {["All", "E-Commerce", "Mobile", "APIs"].map((category) => (
+            {['All', 'E-Commerce', 'Mobile', 'APIs'].map((category) => (
               <button
                 key={category}
                 type="button"
                 onClick={() => setActiveCategory(category)}
-                className={`rounded-full px-5 py-2 text-xxs font-bold uppercase tracking-wider transition-all duration-200 ${
+                className={`rounded-full px-5 py-2 text-xxs font-bold uppercase tracking-wider transition-colors duration-200 ${
                   activeCategory === category
-                    ? "bg-[#c5e32b] text-zinc-950 shadow-md font-extrabold"
-                    : "bg-white/5 text-zinc-300 hover:bg-white/10 hover:text-white"
+                    ? 'bg-[#c5e32b] text-zinc-950 shadow-md font-extrabold'
+                    : 'bg-white/5 text-zinc-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 {category}
@@ -570,7 +620,7 @@ const Home = () => {
               key={project.id}
               onClick={() => setSelectedProject(project)}
               className={`group glass-card cursor-pointer overflow-hidden flex flex-col justify-between project-anim-card opacity-0 ${
-                idx % 3 === 0 ? "md:col-span-2 aspect-video md:aspect-[2.2/1] p-8 sm:p-10" : "aspect-square p-6 sm:p-8"
+                idx % 3 === 0 ? 'md:col-span-2 aspect-video md:aspect-[2.2/1] p-8 sm:p-10' : 'aspect-square p-6 sm:p-8'
               }`}
             >
               <div className="flex items-start justify-between">
@@ -607,11 +657,9 @@ const Home = () => {
 
       {/* 5. DYNAMIC 3D DECK TESTIMONIAL CAROUSEL */}
       <Section id="testimonials" className="bg-[#061a17] py-32 border-b border-white/5 relative overflow-hidden">
-        
-        {/* Soft Ambient Background Mesh */}
+
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_40%,rgba(13,148,136,0.06)_0%,transparent_50%)] z-0" />
-        
-        {/* Large watermark text */}
+
         <div className="absolute right-10 bottom-10 text-[11vw] font-extrabold font-display text-white/[0.015] pointer-events-none uppercase select-none z-0 tracking-widest">
           Reviews
         </div>
@@ -624,23 +672,23 @@ const Home = () => {
 
           {/* 3D Stack Deck Slider */}
           <div ref={testimonialsRef} className="relative w-full max-w-xl mx-auto min-h-[300px] mt-16 flex items-center justify-center opacity-0">
-            {testimonials.map((t, idx) => {
+            {TESTIMONIALS.map((t, idx) => {
               const isActive = idx === activeTestimonial;
-              const isPrev = idx === (activeTestimonial - 1 + testimonials.length) % testimonials.length;
-              const isNext = idx === (activeTestimonial + 1) % testimonials.length;
+              const isPrev = idx === (activeTestimonial - 1 + TESTIMONIALS.length) % TESTIMONIALS.length;
+              const isNext = idx === (activeTestimonial + 1) % TESTIMONIALS.length;
 
-              let styleClass = "opacity-0 scale-75 pointer-events-none translate-x-[150%]";
-              if (isActive) styleClass = "opacity-100 scale-100 z-30 translate-x-0";
-              if (isPrev) styleClass = "opacity-40 scale-85 z-10 -translate-x-[70%] blur-[2px]";
-              if (isNext) styleClass = "opacity-40 scale-85 z-10 translate-x-[70%] blur-[2px]";
+              let styleClass = 'opacity-0 scale-75 pointer-events-none translate-x-[150%]';
+              if (isActive) styleClass = 'opacity-100 scale-100 z-30 translate-x-0';
+              if (isPrev) styleClass = 'opacity-40 scale-85 z-10 -translate-x-[70%] blur-[2px]';
+              if (isNext) styleClass = 'opacity-40 scale-85 z-10 translate-x-[70%] blur-[2px]';
 
               return (
                 <div
                   key={idx}
-                  className={`absolute w-full max-w-md p-8 glass-card border-white/10 rounded-3xl transition-all duration-500 ease-out select-none flex flex-col justify-between min-h-[260px] shadow-2xl ${styleClass}`}
+                  className={`absolute w-full max-w-md p-8 glass-card border-white/10 rounded-3xl transition-[opacity,transform,filter] duration-500 ease-out select-none flex flex-col justify-between min-h-[260px] shadow-2xl ${styleClass}`}
                 >
                   <div className="text-left">
-                    <span className="text-6xl text-teal-850 leading-none select-none font-display">“</span>
+                    <span className="text-6xl text-teal-850 leading-none select-none font-display">"</span>
                     <p className="text-sm sm:text-base leading-relaxed text-zinc-300 font-medium font-display mt-[-10px]">
                       {t.quote}
                     </p>
@@ -663,14 +711,14 @@ const Home = () => {
           {/* Navigation Slider Buttons */}
           <div className="mt-8 flex justify-center gap-4 relative z-20">
             <button
-              onClick={() => setActiveTestimonial((v) => (v - 1 + testimonials.length) % testimonials.length)}
-              className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/2 hover:bg-white/10 text-white transition shadow-sm hover:border-white/20 font-display"
+              onClick={() => setActiveTestimonial((v) => (v - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)}
+              className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/2 hover:bg-white/10 text-white transition-colors shadow-sm hover:border-white/20 font-display"
             >
               &larr;
             </button>
             <button
-              onClick={() => setActiveTestimonial((v) => (v + 1) % testimonials.length)}
-              className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/2 hover:bg-white/10 text-white transition shadow-sm hover:border-white/20 font-display"
+              onClick={() => setActiveTestimonial((v) => (v + 1) % TESTIMONIALS.length)}
+              className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/2 hover:bg-white/10 text-white transition-colors shadow-sm hover:border-white/20 font-display"
             >
               &rarr;
             </button>
@@ -678,9 +726,9 @@ const Home = () => {
         </Container>
       </Section>
 
-      {/* 6. FAQ ACCORDION (Light Sand theme for mockup contrast alignment) */}
+      {/* 6. FAQ ACCORDION */}
       <Section id="faqs" className="bg-[#f4f2ee] pt-32 pb-32 relative overflow-hidden border-b border-zinc-200">
-        
+
         <div ref={faqRef} className="relative z-10 text-center max-w-3xl mx-auto mb-14 opacity-0 px-4">
           <span className="saas-badge bg-zinc-200 text-zinc-850 border-zinc-300/60 font-semibold">FAQ</span>
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl text-zinc-950 font-display">
@@ -688,15 +736,15 @@ const Home = () => {
           </h2>
         </div>
         <div className="relative z-10 px-4">
-          <FAQ faqs={homeFaqs} />
+          <FAQ faqs={HOME_FAQS} />
         </div>
       </Section>
 
-      {/* --- FLOATING SPECIFICATION PREVIEW MODAL DRAWER --- */}
+      {/* --- FLOATING SPECIFICATION PREVIEW MODAL --- */}
       {selectedProject && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md">
           <div className="relative w-full max-w-2xl bg-[#0a2522] border border-teal-900/30 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-y-auto max-h-[90vh] text-white">
-            
+
             {/* Close Button */}
             <button
               onClick={() => setSelectedProject(null)}

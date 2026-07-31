@@ -23,12 +23,13 @@ const EnterpriseServicePage = ({ service }) => {
   });
 
   return (
-    <div className="bg-[#09090b] text-zinc-150 min-h-screen bg-grid-saas">
-      {/* 1. Hero Section */}
-      <section className="relative overflow-hidden pt-28 sm:pt-36 lg:pt-40 border-b border-zinc-800 bg-[#09090b]">
-        <Container className="relative py-20 sm:py-24 lg:py-32 text-center">
+    <div className="bg-[#061a17] text-[#0f172a] min-h-screen">
+      
+      {/* 1. Hero Section (Deep Teal - Dark) */}
+      <section className="relative overflow-hidden pt-28 sm:pt-36 lg:pt-40 border-b border-teal-950 bg-gradient-to-b from-[#030f0d] to-[#061a17] text-white">
+        <Container className="relative py-20 sm:py-24 lg:py-32 text-center z-10">
           <Reveal y={10}>
-            <span className="saas-badge">
+            <span className="saas-badge text-teal-350">
               Enterprise Delivery &bull; {service.title}
             </span>
           </Reveal>
@@ -40,18 +41,18 @@ const EnterpriseServicePage = ({ service }) => {
           </Reveal>
 
           <Reveal y={15} delay={0.3}>
-            <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-zinc-400 sm:text-base">
+            <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-zinc-350 sm:text-base">
               {service.description}
             </p>
           </Reveal>
 
           <Reveal y={15} delay={0.45}>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button as="a" href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" className="btn-saas-primary text-xs px-8 py-3.5 rounded-md font-bold text-zinc-950 shadow-sm">
+              <Button as="a" href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" className="btn-saas-primary text-xs px-8 py-3.5 shadow-sm font-bold bg-teal-500 hover:bg-teal-600 text-zinc-950 rounded-full border-0">
                 {service.ctaButton || "Book Discovery Session"}
                 <Icon name="calendar" className="h-4 w-4" strokeWidth={2} />
               </Button>
-              <Button as="a" href="/contact" className="btn-saas-secondary text-xs px-8 py-3.5 rounded-md">
+              <Button as="a" href="/contact" className="btn-saas-secondary text-xs px-8 py-3.5 rounded-full border-teal-800 text-teal-100 hover:bg-teal-950/30">
                 Contact Engineering
               </Button>
             </div>
@@ -59,20 +60,20 @@ const EnterpriseServicePage = ({ service }) => {
         </Container>
       </section>
 
-      {/* 2. Service Overview */}
-      <Section id="overview" className="bg-zinc-950/45 border-b border-zinc-800 py-20 bg-dot-matrix">
+      {/* 2. Service Overview (Warm Sand - Light) */}
+      <Section id="overview" className="bg-[#f4f2ee] border-b border-zinc-200 py-20 text-[#0f172a]">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-16">
           <Reveal y={15}>
             <SectionHeading
               eyebrow="Capabilities"
               title={service.overviewTitle || "Modern architectural execution"}
               description="How we build digital products that scale, load immediately, and drive transactions."
-              invert
+              invert={false}
             />
           </Reveal>
           <Reveal y={15} delay={0.15}>
-            <div className="saas-card p-6 sm:p-8 lg:p-10 relative overflow-hidden">
-              <p className="text-xs leading-relaxed text-zinc-350 sm:text-sm font-semibold">
+            <div className="saas-card p-6 sm:p-8 lg:p-10 bg-white rounded-2xl border border-zinc-200/80 shadow-sm">
+              <p className="text-xs leading-relaxed text-zinc-700 sm:text-sm font-semibold">
                 {service.overview}
               </p>
             </div>
@@ -80,8 +81,8 @@ const EnterpriseServicePage = ({ service }) => {
         </div>
       </Section>
 
-      {/* 3. Business Challenges & Solutions */}
-      <Section id="challenges" className="bg-[#09090b] py-24 border-b border-zinc-800">
+      {/* 3. Business Challenges & Solutions (Warm Sand Light - Light) */}
+      <Section id="challenges" className="bg-[#faf9f6] py-24 border-b border-zinc-200 text-[#0f172a]">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -89,26 +90,26 @@ const EnterpriseServicePage = ({ service }) => {
             title="Solving critical product challenges"
             description="We audit legacy problems and apply technical solutions that recover lost leads and minimize downtime."
             className="mb-16"
-            invert
+            invert={false}
           />
         </Reveal>
 
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Challenges Column */}
           <div className="flex flex-col gap-6">
-            <h3 className="text-xs font-bold text-zinc-400 border-l-2 border-zinc-800 pl-4 font-display uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-zinc-500 border-l-2 border-zinc-350 pl-4 font-display uppercase tracking-wider">
               Common Product Obstacles
             </h3>
             {service.challenges.map((ch, idx) => (
               <Reveal key={ch.title} y={15} delay={idx * 0.1}>
-                <Card className="border border-red-500/10 bg-red-950/5 p-6 rounded-lg">
+                <Card className="border border-rose-100 bg-[#fff5f5] p-6 rounded-2xl">
                   <div className="flex gap-4">
-                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded bg-red-500/10 text-red-500 text-xs font-bold mt-1 font-mono">
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded bg-rose-50 text-rose-800 text-xs font-bold mt-1 font-mono">
                       !
                     </span>
                     <div>
-                      <h4 className="font-bold text-white text-sm font-display">{ch.title}</h4>
-                      <p className="mt-1.5 text-xs text-zinc-450 leading-relaxed">{ch.description}</p>
+                      <h4 className="font-bold text-rose-950 text-sm font-display">{ch.title}</h4>
+                      <p className="mt-1.5 text-xs text-rose-900 leading-relaxed">{ch.description}</p>
                     </div>
                   </div>
                 </Card>
@@ -118,19 +119,19 @@ const EnterpriseServicePage = ({ service }) => {
 
           {/* Solutions Column */}
           <div className="flex flex-col gap-6">
-            <h3 className="text-xs font-bold text-zinc-450 border-l-2 border-zinc-800 pl-4 font-display uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-zinc-500 border-l-2 border-zinc-350 pl-4 font-display uppercase tracking-wider">
               Our Engineering Response
             </h3>
             {service.solutions.map((sol, idx) => (
               <Reveal key={sol.title} y={15} delay={idx * 0.1}>
-                <Card className="border border-zinc-800 bg-zinc-900/50 p-6 rounded-lg">
+                <Card className="border border-teal-100 bg-[#f0f9f9] p-6 rounded-2xl">
                   <div className="flex gap-4">
-                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded bg-zinc-850 text-white text-xs font-bold mt-1 font-mono">
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded bg-teal-50 text-teal-800 text-xs font-bold mt-1 font-mono">
                       ✓
                     </span>
                     <div>
-                      <h4 className="font-bold text-white text-sm font-display">{sol.title}</h4>
-                      <p className="mt-1.5 text-xs text-zinc-455 leading-relaxed">{sol.description}</p>
+                      <h4 className="font-bold text-teal-950 text-sm font-display">{sol.title}</h4>
+                      <p className="mt-1.5 text-xs text-teal-900 leading-relaxed">{sol.description}</p>
                     </div>
                   </div>
                 </Card>
@@ -140,8 +141,8 @@ const EnterpriseServicePage = ({ service }) => {
         </div>
       </Section>
 
-      {/* 4. Key Features Grid */}
-      <Section id="features" className="bg-zinc-950/45 border-b border-zinc-800 py-24 bg-dot-matrix">
+      {/* 4. Key Features Grid (Deep Teal - Dark) */}
+      <Section id="features" className="bg-[#061a17] border-b border-teal-950 py-24 text-white">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -149,20 +150,20 @@ const EnterpriseServicePage = ({ service }) => {
             title="What we bring to every codebase"
             description="Highly tailored engineering frameworks constructed natively for scalability."
             className="mb-16"
-            invert
+            invert={true}
           />
         </Reveal>
 
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 text-white">
           {service.features.map((feature, idx) => (
             <Reveal key={feature.title} y={15} delay={idx * 0.1}>
-              <div className="saas-card p-6 sm:p-8 flex gap-5">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded border border-zinc-805 bg-zinc-900 text-zinc-300">
+              <div className="saas-card p-6 sm:p-8 flex gap-5 bg-[#0a2522] border-0 rounded-2xl">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded border border-teal-900 bg-[#061a17] text-teal-350">
                   <Icon name={feature.icon || "sparkles"} className="h-5 w-5" />
                 </span>
                 <div>
                   <h3 className="text-base font-bold text-white leading-tight font-display">{feature.title}</h3>
-                  <p className="mt-2 text-xs leading-relaxed text-zinc-450">{feature.description}</p>
+                  <p className="mt-2 text-xs leading-relaxed text-zinc-350">{feature.description}</p>
                 </div>
               </div>
             </Reveal>
@@ -170,9 +171,9 @@ const EnterpriseServicePage = ({ service }) => {
         </div>
       </Section>
 
-      {/* 4.5 Types of Solutions We Build */}
+      {/* 4.5 Types of Solutions We Build (Warm Sand - Light) */}
       {service.solutionsList && (
-        <Section id="solutions-built" className="bg-[#09090b] py-24 border-b border-zinc-800">
+        <Section id="solutions-built" className="bg-[#f4f2ee] py-24 border-b border-zinc-200 text-[#0f172a]">
           <Reveal y={15}>
             <SectionHeading
               align="center"
@@ -180,19 +181,17 @@ const EnterpriseServicePage = ({ service }) => {
               title="Types of solutions we build"
               description="Bespoke software configurations structured for operational demands."
               className="mb-16"
-              invert
+              invert={false}
             />
           </Reveal>
 
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 text-[#0f172a]">
             {service.solutionsList.map((sol, idx) => (
               <Reveal key={sol.title} y={15} delay={idx * 0.08}>
-                <div className="saas-card p-6 sm:p-8">
-                  <span className="saas-badge">
-                    Platform Solution
-                  </span>
-                  <h4 className="mt-4 text-base font-bold text-white font-display">{sol.title}</h4>
-                  <p className="mt-2 text-xs leading-relaxed text-zinc-400">{sol.description}</p>
+                <div className="saas-card p-6 sm:p-8 bg-white border border-zinc-200/85 rounded-2xl shadow-sm">
+                  <span className="saas-badge text-teal-800 bg-zinc-50 border-0">Platform Solution</span>
+                  <h4 className="mt-4 text-base font-bold text-zinc-950 font-display">{sol.title}</h4>
+                  <p className="mt-2 text-xs leading-relaxed text-zinc-600">{sol.description}</p>
                 </div>
               </Reveal>
             ))}
@@ -200,8 +199,8 @@ const EnterpriseServicePage = ({ service }) => {
         </Section>
       )}
 
-      {/* 5. Development Workflow Timeline */}
-      <Section id="workflow" className="bg-zinc-950/45 border-b border-zinc-800 py-24 bg-dot-matrix">
+      {/* 5. Development Workflow Timeline (Warm Sand Light - Light) */}
+      <Section id="workflow" className="bg-[#faf9f6] border-b border-zinc-200 py-24 text-[#0f172a]">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -209,41 +208,29 @@ const EnterpriseServicePage = ({ service }) => {
             title="Our development workflow"
             description="A transparent, milestone-driven execution layout to ship code safely."
             className="mb-20"
-            invert
+            invert={false}
           />
         </Reveal>
 
-        <div className="relative mx-auto max-w-3xl timeline-line">
-          <div className="space-y-14">
-            {service.workflow.map((step, index) => {
-              const isEven = index % 2 === 0;
-              return (
-                <div key={step.title} className="relative flex flex-col sm:flex-row sm:justify-between">
-                  {/* Step counter tag */}
-                  <div className="absolute left-4 top-1.5 z-10 grid h-7 w-7 place-items-center rounded border border-zinc-800 bg-zinc-900 font-bold text-[9px] text-white sm:left-1/2 sm:-translate-x-1/2 font-mono">
-                    {step.step || `0${index + 1}`}
-                  </div>
-
-                  {/* Card wrapper */}
-                  <div className={`pl-12 sm:w-[45%] sm:pl-0 ${isEven ? "sm:order-1 sm:text-right" : "sm:order-2"}`}>
-                    <Reveal y={15}>
-                      <Card className="bg-[#121214] border border-zinc-800 p-6 rounded-lg relative overflow-hidden">
-                        <h4 className="text-base font-bold text-white font-display">{step.title}</h4>
-                        <p className="mt-2 text-xs leading-relaxed text-zinc-405">{step.description}</p>
-                      </Card>
-                    </Reveal>
-                  </div>
-
-                  <div className="hidden sm:block sm:w-[45%]" />
+        <div className="relative mx-auto max-w-3xl border-l border-zinc-200 pl-8 space-y-14">
+          {service.workflow.map((step, index) => (
+            <Reveal key={step.title} y={15} delay={index * 0.08}>
+              <div className="relative text-[#0f172a]">
+                <span className="absolute -left-12 top-0.5 grid h-8 w-8 place-items-center rounded-full border border-teal-650 bg-white font-mono text-xs font-bold text-teal-700">
+                  {step.step || `0${index + 1}`}
+                </span>
+                <div className="saas-card bg-white border border-zinc-200/80 p-6 rounded-2xl shadow-sm">
+                  <h4 className="text-base font-bold text-zinc-950 font-display">{step.title}</h4>
+                  <p className="mt-2 text-xs leading-relaxed text-zinc-600">{step.description}</p>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </Section>
 
-      {/* 6. Technology Stack */}
-      <Section id="stack" className="bg-[#09090b] py-24 border-b border-zinc-800">
+      {/* 6. Technology Stack (Void Black / Dark Teal Accent) */}
+      <Section id="stack" className="bg-[#030f0d] py-24 border-b border-teal-950 text-white">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -251,13 +238,13 @@ const EnterpriseServicePage = ({ service }) => {
             title="Tools & platforms we master"
             description="We build using modern, compiled platforms that ensure high processing speeds."
             className="mb-12"
-            invert
+            invert={true}
           />
         </Reveal>
         <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
           {service.technologies.map((tech, idx) => (
             <Reveal key={tech} y={10} delay={idx * 0.05}>
-              <span className="rounded border border-zinc-800 bg-[#121214] px-5 py-3 text-xs font-semibold text-zinc-400 hover:border-zinc-700 hover:text-white transition cursor-default">
+              <span className="rounded-full border border-teal-900 bg-[#0a2522] px-5 py-3 text-xs font-semibold text-teal-100 hover:border-teal-700 hover:text-white transition duration-200 cursor-default font-mono">
                 {tech}
               </span>
             </Reveal>
@@ -265,8 +252,8 @@ const EnterpriseServicePage = ({ service }) => {
         </div>
       </Section>
 
-      {/* 7. Business Benefits */}
-      <Section id="benefits" className="bg-zinc-950/45 border-b border-zinc-800 py-24 bg-dot-matrix">
+      {/* 7. Business Benefits (Deep Teal - Dark) */}
+      <Section id="benefits" className="bg-[#061a17] border-b border-teal-900 py-24 text-white">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
           <div>
             <Reveal y={15}>
@@ -274,19 +261,19 @@ const EnterpriseServicePage = ({ service }) => {
                 eyebrow="ROI Gains"
                 title="Business advantages"
                 description="We optimize architectures to recover transaction volumes and support business conversions."
-                invert
+                invert={true}
               />
             </Reveal>
-            <div className="mt-8 space-y-5">
+            <div className="mt-8 space-y-5 text-white">
               {service.benefits.map((benefit, idx) => (
                 <Reveal key={benefit.title} y={15} delay={idx * 0.1}>
                   <div className="flex gap-4">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded border border-zinc-850 bg-zinc-900 text-zinc-350 mt-1 font-mono text-xs">
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded border border-teal-900 bg-teal-950 text-teal-100 mt-1 font-mono text-xs">
                       {idx + 1}
                     </span>
                     <div>
                       <h4 className="font-bold text-white text-base font-display">{benefit.title}</h4>
-                      <p className="mt-1 text-xs text-zinc-405 leading-relaxed">{benefit.description}</p>
+                      <p className="mt-1 text-xs text-zinc-350 leading-relaxed">{benefit.description}</p>
                     </div>
                   </div>
                 </Reveal>
@@ -301,17 +288,17 @@ const EnterpriseServicePage = ({ service }) => {
                 eyebrow="Target Verticals"
                 title="Industries we service"
                 description="Our developers understand specialized industry catalogs and transaction requirements."
-                invert
+                invert={true}
               />
             </Reveal>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {service.industries.map((ind, idx) => (
                 <Reveal key={ind} y={10} delay={idx * 0.05}>
-                  <div className="flex items-center gap-3 rounded-lg border border-zinc-800 bg-[#121214] p-4">
-                    <span className="grid h-5 w-5 place-items-center rounded bg-zinc-900 text-zinc-400">
+                  <div className="flex items-center gap-3 rounded-xl border border-teal-900 bg-[#0a2522] p-4">
+                    <span className="grid h-5 w-5 place-items-center rounded bg-teal-950 text-teal-350">
                       <Icon name="check" className="h-3.5 w-3.5" strokeWidth={3} />
                     </span>
-                    <span className="text-xs font-semibold text-zinc-400">{ind}</span>
+                    <span className="text-xs font-semibold text-teal-100">{ind}</span>
                   </div>
                 </Reveal>
               ))}
@@ -320,9 +307,9 @@ const EnterpriseServicePage = ({ service }) => {
         </div>
       </Section>
 
-      {/* 8. Case Studies Preview */}
+      {/* 8. Case Studies Preview (Warm Sand - Light) */}
       {relevantProjects.length > 0 && (
-        <Section id="portfolio-preview" className="bg-[#09090b] py-24 border-b border-zinc-800">
+        <Section id="portfolio-preview" className="bg-[#f4f2ee] py-24 border-b border-zinc-200">
           <Reveal y={15}>
             <SectionHeading
               align="center"
@@ -330,7 +317,7 @@ const EnterpriseServicePage = ({ service }) => {
               title="Featured solutions in action"
               description="Excerpts of custom client configurations shipped by our software engineering teams."
               className="mb-16"
-              invert
+              invert={false}
             />
           </Reveal>
 
@@ -344,8 +331,8 @@ const EnterpriseServicePage = ({ service }) => {
         </Section>
       )}
 
-      {/* 9. FAQs Accordion */}
-      <Section id="faq" className="bg-zinc-950/45 border-b border-zinc-800 py-24 bg-dot-matrix">
+      {/* 9. FAQs Accordion (Warm Sand Light - Light) */}
+      <Section id="faq" className="bg-[#faf9f6] border-b border-zinc-200 py-24">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -353,32 +340,32 @@ const EnterpriseServicePage = ({ service }) => {
             title="Service FAQs"
             description="Find detailed answers to common architectural and integration questions."
             className="mb-14"
-            invert
+            invert={false}
           />
         </Reveal>
         <Reveal y={15} delay={0.15}>
-          <FAQ faqs={service.faqs} dark={true} />
+          <FAQ faqs={service.faqs} dark={false} />
         </Reveal>
       </Section>
 
-      {/* 10. CTA Block */}
-      <section className="bg-zinc-950 py-20 sm:py-24 border-t border-zinc-800">
+      {/* 10. CTA Block (Deep Teal - Dark) */}
+      <section className="bg-[#061a17] py-20 sm:py-24 border-t border-teal-950 text-white">
         <Container>
           <Reveal y={20}>
-            <div className="relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 px-8 py-16 text-center text-white sm:px-12 sm:py-20 shadow-sm bg-grid-saas">
+            <div className="relative overflow-hidden rounded-2xl border border-teal-900/60 bg-[#030f0d] px-8 py-16 text-center text-white sm:px-12 sm:py-20 shadow-sm bg-grid-saas">
               <div className="relative mx-auto max-w-2xl">
                 <h2 className="text-2xl font-bold tracking-tight sm:text-3xl text-white font-display">
                   {service.ctaTitle || "Scale your website's performance"}
                 </h2>
-                <p className="mt-4 text-xs text-zinc-450 sm:text-sm">
+                <p className="mt-4 text-xs text-teal-200/80 sm:text-sm">
                   {service.ctaDesc || "Get in touch with our web engineers to audit your site's speed and outline a headless roadmap."}
                 </p>
                 <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-                  <Button as="a" href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" className="btn-saas-primary px-8 py-3.5 rounded-md font-bold text-zinc-950">
+                  <Button as="a" href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" className="btn-saas-primary text-xs px-8 py-3.5 rounded-full font-bold bg-teal-500 hover:bg-teal-600 text-zinc-950 border-0">
                     {service.ctaButton || "Book Discovery Session"}
                     <Icon name="calendar" className="h-4 w-4" strokeWidth={2} />
                   </Button>
-                  <Button as="a" href="/contact" className="btn-saas-secondary rounded-md px-8">
+                  <Button as="a" href="/contact" className="btn-saas-secondary rounded-full px-8 py-3.5 border-teal-800 text-teal-100 hover:bg-teal-950/30">
                     Send Us a Message
                   </Button>
                 </div>

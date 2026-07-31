@@ -23,34 +23,35 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-[999] transition-all duration-200 ${
+      className={`fixed left-1/2 -translate-x-1/2 w-[92%] max-w-[1400px] z-[999] rounded-2xl border transition-all duration-300 ${
         scrolled
-          ? "border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-md shadow-sm"
-          : "border-b border-transparent bg-transparent"
+          ? "top-4 bg-[#030f0d]/80 backdrop-blur-lg border-white/10 shadow-2xl py-1.5"
+          : "top-6 bg-[#030f0d]/40 backdrop-blur-md border-white/5 py-2.5"
       }`}
     >
-      <Container className="flex h-16 items-center justify-between lg:h-18">
-        {/* Minimal Logo Symbol */}
-        <RouteLink to="/" className="flex items-center gap-2 group">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 font-display text-sm font-bold text-white transition-colors group-hover:border-zinc-700">
+      <Container className="flex h-14 items-center justify-between">
+        
+        {/* Logo Symbol with rotating indicator hover */}
+        <RouteLink to="/" className="flex items-center gap-2.5 group select-none">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-teal-500/20 bg-teal-950/40 text-xs font-bold text-[#c5e32b] transition-transform duration-500 group-hover:rotate-[360deg] font-display">
             P
           </span>
-          <span className="text-sm font-bold tracking-tight text-white transition-colors group-hover:text-zinc-350 font-display">
+          <span className="text-sm font-bold tracking-wider text-white transition-colors group-hover:text-[#c5e32b] font-display uppercase">
             {company.name}
           </span>
         </RouteLink>
 
-        {/* Desktop Links */}
-        <nav className="hidden items-center gap-1.5 md:flex" aria-label="Primary">
+        {/* Desktop Links with active slide indicators */}
+        <nav className="hidden items-center gap-2 md:flex" aria-label="Primary">
           {navLinks.map((link) => (
             <RouteLink
               key={link.label}
               to={link.href}
               className={({ isActive }) =>
-                `rounded-md px-3.5 py-1.5 font-display text-[11px] font-semibold uppercase tracking-wider transition-colors ${
+                `relative rounded-lg px-4 py-2 font-display text-[11px] font-bold uppercase tracking-wider transition-colors ${
                   isActive
-                    ? "text-white bg-zinc-900 border border-zinc-800"
-                    : "text-zinc-400 hover:text-white"
+                    ? "text-[#c5e32b] bg-white/5"
+                    : "text-zinc-300 hover:text-white hover:bg-white/5"
                 }`
               }
             >
@@ -59,13 +60,13 @@ const Navbar = () => {
           ))}
         </nav>
 
-        {/* Action CTA */}
+        {/* Action CTA with notch design styling */}
         <div className="hidden md:block">
           <Button
             as={RouteLink}
             to="/contact"
-            className="btn-saas-primary text-xs px-5 py-2.5 rounded-md"
-            icon="arrowRight"
+            style={{ clipPath: "polygon(0 0, 100% 0, 90% 50%, 100% 100%, 0 100%)" }}
+            className="btn-saas-primary text-xxs font-bold pl-5 pr-8 py-2.5 bg-[#c5e32b] text-zinc-950 rounded-md border-0"
           >
             Get Started
           </Button>
@@ -77,7 +78,7 @@ const Navbar = () => {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label="Toggle navigation menu"
-          className="grid h-9 w-9 place-items-center rounded-lg border border-zinc-800 text-zinc-450 hover:bg-zinc-900 md:hidden"
+          className="grid h-9 w-9 place-items-center rounded-lg border border-teal-900/30 bg-teal-950/20 text-teal-400 hover:bg-teal-900/40 md:hidden"
         >
           <span className="relative block h-4 w-5">
             <span
@@ -101,8 +102,8 @@ const Navbar = () => {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`overflow-hidden border-t border-zinc-800 bg-zinc-950/95 shadow-xl backdrop-blur-md md:hidden transition-[max-height] duration-300 ease-in-out ${
-          open ? "max-h-[440px]" : "max-h-0"
+        className={`overflow-hidden rounded-b-2xl bg-[#030f0d]/95 backdrop-blur-md md:hidden transition-[max-height] duration-300 ease-in-out ${
+          open ? "max-h-[440px] border-t border-white/5" : "max-h-0"
         }`}
       >
         <Container className="flex flex-col gap-1 py-6">
@@ -111,10 +112,10 @@ const Navbar = () => {
               key={link.label}
               to={link.href}
               className={({ isActive }) =>
-                `rounded-md px-4 py-3 text-xs font-semibold tracking-wider uppercase transition-colors ${
+                `rounded-lg px-4 py-3 text-xs font-bold tracking-wider uppercase transition-colors ${
                   isActive
-                    ? "bg-zinc-900 text-white border-l-2 border-white"
-                    : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                    ? "bg-white/5 text-[#c5e32b]"
+                    : "text-zinc-300 hover:bg-white/5 hover:text-white"
                 }`
               }
             >
@@ -122,8 +123,8 @@ const Navbar = () => {
             </RouteLink>
           ))}
           
-          <div className="border-t border-zinc-850 my-3 pt-3">
-            <p className="px-4 text-[9px] font-bold uppercase tracking-widest text-zinc-500 font-display">
+          <div className="border-t border-white/5 my-3 pt-3">
+            <p className="px-4 text-[9px] font-bold uppercase tracking-widest text-[#c5e32b] font-display">
               Services Pages
             </p>
             <div className="grid grid-cols-2 gap-1 mt-2">
@@ -131,7 +132,7 @@ const Navbar = () => {
                 <RouteLink
                   key={g.key}
                   to={`/${g.slug}`}
-                  className="rounded-md px-4 py-2 text-xs font-semibold text-zinc-405 hover:bg-zinc-900 hover:text-white font-display"
+                  className="rounded-lg px-4 py-2 text-xs font-semibold text-zinc-300 hover:bg-white/5 hover:text-white font-display"
                 >
                   {g.label}
                 </RouteLink>
@@ -139,7 +140,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          <Button as={RouteLink} to="/contact" className="mt-4 w-full btn-saas-primary py-3 rounded-md" icon="arrowRight">
+          <Button as={RouteLink} to="/contact" className="mt-4 w-full btn-saas-primary py-3 rounded-full bg-[#c5e32b] text-zinc-950 font-bold text-xs" icon="arrowRight">
             Get Started
           </Button>
         </Container>

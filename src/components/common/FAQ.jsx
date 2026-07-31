@@ -1,38 +1,45 @@
 import { useState } from "react";
-import Icon from "../ui/Icon";
 
-const FAQItem = ({ question, answer, isOpen, onToggle, dark }) => {
+const FAQItem = ({ question, answer, isOpen, onToggle, index }) => {
   return (
-    <div className={`border-b last:border-0 ${dark ? "border-white/5" : "border-slate-100"}`}>
+    <div className="border-b border-zinc-200/60 last:border-0 py-6">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className={`flex w-full items-center justify-between py-5 text-left font-semibold transition-colors focus:outline-none ${
-          dark ? "text-white hover:text-indigo-400" : "text-slate-900 hover:text-indigo-600"
-        }`}
+        className="flex w-full items-start justify-between text-left font-bold transition-colors focus:outline-none"
       >
-        <span>{question}</span>
+        <div className="flex items-start gap-5 sm:gap-7">
+          {/* Index Serial number (01, 02, etc.) */}
+          <span className="font-display text-xl sm:text-2xl font-bold text-zinc-300 leading-none select-none">
+            0{index + 1}
+          </span>
+          <span className="text-sm sm:text-base font-display text-zinc-900 leading-tight">
+            {question}
+          </span>
+        </div>
+
+        {/* Circular Accordion toggle Button */}
         <span
-          className={`grid h-8 w-8 place-items-center rounded-lg transition-transform duration-300 ${
-            dark
-              ? isOpen
-                ? "bg-indigo-600/10 text-indigo-400"
-                : "bg-white/5 text-slate-400"
-              : isOpen
-              ? "bg-indigo-50 text-indigo-600"
-              : "bg-slate-50 text-slate-500"
+          className={`grid h-8.5 w-8.5 shrink-0 place-items-center rounded-full border shadow-xxs transition-colors duration-200 ${
+            isOpen
+              ? "bg-zinc-950 border-zinc-950 text-white font-bold"
+              : "bg-white border-zinc-200 text-zinc-650 hover:bg-zinc-50"
           }`}
         >
-          <Icon name="arrowRight" className="h-4 w-4 rotate-90" strokeWidth={2.2} />
+          <span className="text-sm leading-none font-display">
+            {isOpen ? "×" : "+"}
+          </span>
         </span>
       </button>
+
+      {/* Accordion content */}
       <div
         className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? "max-h-60 pb-5 opacity-100" : "max-h-0 opacity-0"
+          isOpen ? "max-h-60 mt-4 pl-10 sm:pl-14 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <p className={`text-sm leading-relaxed sm:text-base ${dark ? "text-slate-400" : "text-slate-600"}`}>
+        <p className="text-xs sm:text-sm leading-relaxed text-zinc-600 font-semibold font-sans">
           {answer}
         </p>
       </div>
@@ -40,8 +47,8 @@ const FAQItem = ({ question, answer, isOpen, onToggle, dark }) => {
   );
 };
 
-const FAQ = ({ faqs = [], dark = false }) => {
-  const [openIndex, setOpenIndex] = useState(null);
+const FAQ = ({ faqs = [] }) => {
+  const [openIndex, setOpenIndex] = useState(0); // open first item by default like mockup
 
   const handleToggle = (index) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -50,19 +57,15 @@ const FAQ = ({ faqs = [], dark = false }) => {
   if (!faqs.length) return null;
 
   return (
-    <div
-      className={`mx-auto max-w-3xl rounded-2xl border p-6 sm:p-8 shadow-sm ${
-        dark ? "border-white/5 bg-white/[0.01] shadow-2xl" : "border-slate-200/80 bg-white shadow-sm"
-      }`}
-    >
+    <div className="mx-auto max-w-4xl text-[#0f172a] px-4">
       {faqs.map((faq, index) => (
         <FAQItem
           key={faq.question}
+          index={index}
           question={faq.question}
           answer={faq.answer}
           isOpen={openIndex === index}
           onToggle={() => handleToggle(index)}
-          dark={dark}
         />
       ))}
     </div>

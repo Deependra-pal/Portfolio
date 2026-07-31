@@ -1,20 +1,17 @@
 import Icon from "./Icon";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center gap-2 rounded-xl text-xs font-semibold tracking-wider uppercase transition-all duration-200 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 font-display";
 
 const sizes = {
-  md: "px-6 py-3",
-  lg: "px-7 py-3.5 text-base",
+  md: "px-5 py-2.5",
+  lg: "px-7 py-3.5 text-xs",
 };
 
 const variants = {
-  primary:
-    "bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 hover:bg-indigo-500 hover:shadow-indigo-500/30 hover:-translate-y-0.5",
-  ghost:
-    "border border-slate-300 bg-white/60 text-slate-800 hover:border-slate-400 hover:bg-white",
-  invert:
-    "border border-white/20 bg-white/10 text-white backdrop-blur hover:bg-white/20",
+  primary: "bg-[#2563eb] text-white hover:bg-[#1d4ed8] shadow-sm",
+  ghost: "border border-zinc-800 bg-transparent text-white hover:bg-zinc-900",
+  invert: "border border-zinc-800 bg-zinc-950 text-white hover:bg-zinc-900",
 };
 
 const Button = ({
@@ -27,13 +24,20 @@ const Button = ({
   ...rest
 }) => {
   const Tag = as;
+  
+  // Clean custom class detection
+  const isCustomClass = className.includes("btn-saas-primary") || className.includes("btn-saas-secondary");
+  const computedClasses = isCustomClass 
+    ? `${base} ${sizes[size]} ${className}`
+    : `${base} ${sizes[size]} ${variants[variant]} ${className}`;
+
   return (
     <Tag
-      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
+      className={computedClasses}
       {...rest}
     >
       {children}
-      {icon && <Icon name={icon} className="h-4 w-4" strokeWidth={2} />}
+      {icon && <Icon name={icon} className="h-4.5 w-4.5 shrink-0" strokeWidth={2} />}
     </Tag>
   );
 };

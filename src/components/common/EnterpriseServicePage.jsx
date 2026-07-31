@@ -23,15 +23,9 @@ const EnterpriseServicePage = ({ service }) => {
   });
 
   return (
-    <div className="bg-[#080c16] text-slate-100 min-h-screen bg-grid-saas">
+    <div className="bg-[#09090b] text-zinc-150 min-h-screen bg-grid-saas">
       {/* 1. Hero Section */}
-      <section className="relative overflow-hidden pt-28 sm:pt-36 lg:pt-40 border-b border-white/5 bg-[#080c16]">
-        {/* Glow Spheres */}
-        <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden="true">
-          <div className="absolute left-1/4 top-10 h-96 w-96 rounded-full bg-brand-cyan/5 blur-[120px]" />
-          <div className="absolute right-1/4 top-1/4 h-80 w-80 rounded-full bg-brand-blue/5 blur-[100px]" />
-        </div>
-
+      <section className="relative overflow-hidden pt-28 sm:pt-36 lg:pt-40 border-b border-zinc-800 bg-[#09090b]">
         <Container className="relative py-20 sm:py-24 lg:py-32 text-center">
           <Reveal y={10}>
             <span className="saas-badge">
@@ -40,24 +34,24 @@ const EnterpriseServicePage = ({ service }) => {
           </Reveal>
 
           <Reveal y={15} delay={0.15}>
-            <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl text-white font-display">
+            <h1 className="mt-6 text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl text-white font-display">
               {service.subtitle || service.title}
             </h1>
           </Reveal>
 
           <Reveal y={15} delay={0.3}>
-            <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-slate-400 sm:text-base">
+            <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-zinc-400 sm:text-base">
               {service.description}
             </p>
           </Reveal>
 
           <Reveal y={15} delay={0.45}>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button as="a" href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" size="lg" className="btn-saas-primary px-8 py-3 rounded-full text-white font-bold shadow-lg">
+              <Button as="a" href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" className="btn-saas-primary text-xs px-8 py-3.5 rounded-md font-bold text-zinc-950 shadow-sm">
                 {service.ctaButton || "Book Discovery Session"}
                 <Icon name="calendar" className="h-4 w-4" strokeWidth={2} />
               </Button>
-              <Button as="a" href="/contact" size="lg" className="btn-saas-secondary rounded-full px-8">
+              <Button as="a" href="/contact" className="btn-saas-secondary text-xs px-8 py-3.5 rounded-md">
                 Contact Engineering
               </Button>
             </div>
@@ -66,7 +60,7 @@ const EnterpriseServicePage = ({ service }) => {
       </section>
 
       {/* 2. Service Overview */}
-      <Section id="overview" className="bg-[#0c1322] border-b border-white/5 py-20 bg-dot-matrix">
+      <Section id="overview" className="bg-zinc-950/45 border-b border-zinc-800 py-20 bg-dot-matrix">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-16">
           <Reveal y={15}>
             <SectionHeading
@@ -78,8 +72,7 @@ const EnterpriseServicePage = ({ service }) => {
           </Reveal>
           <Reveal y={15} delay={0.15}>
             <div className="saas-card p-6 sm:p-8 lg:p-10 relative overflow-hidden">
-              <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-cyan/5 blur-2xl" />
-              <p className="text-xs leading-relaxed text-slate-300 sm:text-sm">
+              <p className="text-xs leading-relaxed text-zinc-350 sm:text-sm font-semibold">
                 {service.overview}
               </p>
             </div>
@@ -88,7 +81,7 @@ const EnterpriseServicePage = ({ service }) => {
       </Section>
 
       {/* 3. Business Challenges & Solutions */}
-      <Section id="challenges" className="bg-[#080c16] py-24 border-b border-white/5">
+      <Section id="challenges" className="bg-[#09090b] py-24 border-b border-zinc-800">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -103,19 +96,19 @@ const EnterpriseServicePage = ({ service }) => {
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Challenges Column */}
           <div className="flex flex-col gap-6">
-            <h3 className="text-xs font-bold text-slate-200 border-l-2 border-brand-rose pl-4 font-display uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-zinc-400 border-l-2 border-zinc-800 pl-4 font-display uppercase tracking-wider">
               Common Product Obstacles
             </h3>
             {service.challenges.map((ch, idx) => (
               <Reveal key={ch.title} y={15} delay={idx * 0.1}>
-                <Card className="border border-brand-rose/10 bg-brand-rose/5 p-6 rounded-2xl">
+                <Card className="border border-red-500/10 bg-red-950/5 p-6 rounded-lg">
                   <div className="flex gap-4">
-                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-brand-rose/10 text-brand-rose text-xs font-bold mt-1 font-mono">
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded bg-red-500/10 text-red-500 text-xs font-bold mt-1 font-mono">
                       !
                     </span>
                     <div>
                       <h4 className="font-bold text-white text-sm font-display">{ch.title}</h4>
-                      <p className="mt-1.5 text-xs text-slate-405 leading-relaxed">{ch.description}</p>
+                      <p className="mt-1.5 text-xs text-zinc-450 leading-relaxed">{ch.description}</p>
                     </div>
                   </div>
                 </Card>
@@ -125,19 +118,19 @@ const EnterpriseServicePage = ({ service }) => {
 
           {/* Solutions Column */}
           <div className="flex flex-col gap-6">
-            <h3 className="text-xs font-bold text-slate-200 border-l-2 border-brand-cyan pl-4 font-display uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-zinc-450 border-l-2 border-zinc-800 pl-4 font-display uppercase tracking-wider">
               Our Engineering Response
             </h3>
             {service.solutions.map((sol, idx) => (
               <Reveal key={sol.title} y={15} delay={idx * 0.1}>
-                <Card className="border border-brand-cyan/15 bg-brand-cyan/5 p-6 rounded-2xl">
+                <Card className="border border-zinc-800 bg-zinc-900/50 p-6 rounded-lg">
                   <div className="flex gap-4">
-                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-brand-cyan/10 text-brand-cyan text-xs font-bold mt-1 font-mono">
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded bg-zinc-850 text-white text-xs font-bold mt-1 font-mono">
                       ✓
                     </span>
                     <div>
                       <h4 className="font-bold text-white text-sm font-display">{sol.title}</h4>
-                      <p className="mt-1.5 text-xs text-slate-405 leading-relaxed">{sol.description}</p>
+                      <p className="mt-1.5 text-xs text-zinc-455 leading-relaxed">{sol.description}</p>
                     </div>
                   </div>
                 </Card>
@@ -148,7 +141,7 @@ const EnterpriseServicePage = ({ service }) => {
       </Section>
 
       {/* 4. Key Features Grid */}
-      <Section id="features" className="bg-[#0c1322] border-b border-white/5 py-24 bg-dot-matrix">
+      <Section id="features" className="bg-zinc-950/45 border-b border-zinc-800 py-24 bg-dot-matrix">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -163,14 +156,13 @@ const EnterpriseServicePage = ({ service }) => {
         <div className="grid gap-6 sm:grid-cols-2">
           {service.features.map((feature, idx) => (
             <Reveal key={feature.title} y={15} delay={idx * 0.1}>
-              <div className="saas-card p-6 sm:p-8 flex gap-5 relative overflow-hidden">
-                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-cyan/5 blur-2xl" />
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded bg-brand-cyan/10 text-brand-cyan">
-                  <Icon name={feature.icon || "sparkles"} className="h-5.5 w-5.5" />
+              <div className="saas-card p-6 sm:p-8 flex gap-5">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded border border-zinc-805 bg-zinc-900 text-zinc-300">
+                  <Icon name={feature.icon || "sparkles"} className="h-5 w-5" />
                 </span>
                 <div>
                   <h3 className="text-base font-bold text-white leading-tight font-display">{feature.title}</h3>
-                  <p className="mt-2 text-xs leading-relaxed text-slate-400">{feature.description}</p>
+                  <p className="mt-2 text-xs leading-relaxed text-zinc-450">{feature.description}</p>
                 </div>
               </div>
             </Reveal>
@@ -180,7 +172,7 @@ const EnterpriseServicePage = ({ service }) => {
 
       {/* 4.5 Types of Solutions We Build */}
       {service.solutionsList && (
-        <Section id="solutions-built" className="bg-[#080c16] py-24 border-b border-white/5">
+        <Section id="solutions-built" className="bg-[#09090b] py-24 border-b border-zinc-800">
           <Reveal y={15}>
             <SectionHeading
               align="center"
@@ -195,13 +187,12 @@ const EnterpriseServicePage = ({ service }) => {
           <div className="grid gap-6 sm:grid-cols-2">
             {service.solutionsList.map((sol, idx) => (
               <Reveal key={sol.title} y={15} delay={idx * 0.08}>
-                <div className="saas-card p-6 sm:p-8 relative overflow-hidden">
-                  <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-cyan/5 blur-2xl" />
-                  <span className="saas-badge text-[8px] py-0.5 px-2.5">
+                <div className="saas-card p-6 sm:p-8">
+                  <span className="saas-badge">
                     Platform Solution
                   </span>
                   <h4 className="mt-4 text-base font-bold text-white font-display">{sol.title}</h4>
-                  <p className="mt-2 text-xs leading-relaxed text-slate-400">{sol.description}</p>
+                  <p className="mt-2 text-xs leading-relaxed text-zinc-400">{sol.description}</p>
                 </div>
               </Reveal>
             ))}
@@ -210,7 +201,7 @@ const EnterpriseServicePage = ({ service }) => {
       )}
 
       {/* 5. Development Workflow Timeline */}
-      <Section id="workflow" className="bg-[#0c1322] border-b border-white/5 py-24 bg-dot-matrix">
+      <Section id="workflow" className="bg-zinc-950/45 border-b border-zinc-800 py-24 bg-dot-matrix">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -229,17 +220,16 @@ const EnterpriseServicePage = ({ service }) => {
               return (
                 <div key={step.title} className="relative flex flex-col sm:flex-row sm:justify-between">
                   {/* Step counter tag */}
-                  <div className="absolute left-4 top-1.5 z-10 grid h-8 w-8 place-items-center rounded-full bg-brand-cyan font-bold text-[10px] text-white sm:left-1/2 sm:-translate-x-1/2 shadow-lg font-mono">
+                  <div className="absolute left-4 top-1.5 z-10 grid h-7 w-7 place-items-center rounded border border-zinc-800 bg-zinc-900 font-bold text-[9px] text-white sm:left-1/2 sm:-translate-x-1/2 font-mono">
                     {step.step || `0${index + 1}`}
                   </div>
 
                   {/* Card wrapper */}
                   <div className={`pl-12 sm:w-[45%] sm:pl-0 ${isEven ? "sm:order-1 sm:text-right" : "sm:order-2"}`}>
                     <Reveal y={15}>
-                      <Card className="bg-[#111a30] border border-white/5 p-6 shadow-xl rounded-2xl relative overflow-hidden">
-                        <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-cyan/5 blur-2xl" />
+                      <Card className="bg-[#121214] border border-zinc-800 p-6 rounded-lg relative overflow-hidden">
                         <h4 className="text-base font-bold text-white font-display">{step.title}</h4>
-                        <p className="mt-2 text-xs leading-relaxed text-slate-400">{step.description}</p>
+                        <p className="mt-2 text-xs leading-relaxed text-zinc-405">{step.description}</p>
                       </Card>
                     </Reveal>
                   </div>
@@ -253,7 +243,7 @@ const EnterpriseServicePage = ({ service }) => {
       </Section>
 
       {/* 6. Technology Stack */}
-      <Section id="stack" className="bg-[#080c16] py-24 border-b border-white/5">
+      <Section id="stack" className="bg-[#09090b] py-24 border-b border-zinc-800">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -267,7 +257,7 @@ const EnterpriseServicePage = ({ service }) => {
         <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
           {service.technologies.map((tech, idx) => (
             <Reveal key={tech} y={10} delay={idx * 0.05}>
-              <span className="rounded-lg border border-white/10 bg-[#111a30] px-5 py-3 text-xs font-semibold text-slate-350 hover:border-brand-cyan hover:bg-brand-cyan/5 hover:text-white transition cursor-default font-mono">
+              <span className="rounded border border-zinc-800 bg-[#121214] px-5 py-3 text-xs font-semibold text-zinc-400 hover:border-zinc-700 hover:text-white transition cursor-default">
                 {tech}
               </span>
             </Reveal>
@@ -276,7 +266,7 @@ const EnterpriseServicePage = ({ service }) => {
       </Section>
 
       {/* 7. Business Benefits */}
-      <Section id="benefits" className="bg-[#0c1322] border-b border-white/5 py-24 bg-dot-matrix">
+      <Section id="benefits" className="bg-zinc-950/45 border-b border-zinc-800 py-24 bg-dot-matrix">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
           <div>
             <Reveal y={15}>
@@ -291,12 +281,12 @@ const EnterpriseServicePage = ({ service }) => {
               {service.benefits.map((benefit, idx) => (
                 <Reveal key={benefit.title} y={15} delay={idx * 0.1}>
                   <div className="flex gap-4">
-                    <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-brand-cyan/10 text-brand-cyan mt-1 font-mono text-xs font-bold">
-                      0{idx + 1}
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded border border-zinc-850 bg-zinc-900 text-zinc-350 mt-1 font-mono text-xs">
+                      {idx + 1}
                     </span>
                     <div>
                       <h4 className="font-bold text-white text-base font-display">{benefit.title}</h4>
-                      <p className="mt-1 text-xs text-slate-400 leading-relaxed">{benefit.description}</p>
+                      <p className="mt-1 text-xs text-zinc-405 leading-relaxed">{benefit.description}</p>
                     </div>
                   </div>
                 </Reveal>
@@ -317,11 +307,11 @@ const EnterpriseServicePage = ({ service }) => {
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {service.industries.map((ind, idx) => (
                 <Reveal key={ind} y={10} delay={idx * 0.05}>
-                  <div className="flex items-center gap-3 rounded-xl border border-white/5 bg-[#111a30] p-4">
-                    <span className="grid h-5 w-5 place-items-center rounded bg-brand-cyan/10 text-brand-cyan">
+                  <div className="flex items-center gap-3 rounded-lg border border-zinc-800 bg-[#121214] p-4">
+                    <span className="grid h-5 w-5 place-items-center rounded bg-zinc-900 text-zinc-400">
                       <Icon name="check" className="h-3.5 w-3.5" strokeWidth={3} />
                     </span>
-                    <span className="text-xs font-semibold text-slate-350">{ind}</span>
+                    <span className="text-xs font-semibold text-zinc-400">{ind}</span>
                   </div>
                 </Reveal>
               ))}
@@ -332,7 +322,7 @@ const EnterpriseServicePage = ({ service }) => {
 
       {/* 8. Case Studies Preview */}
       {relevantProjects.length > 0 && (
-        <Section id="portfolio-preview" className="bg-[#080c16] py-24 border-b border-white/5">
+        <Section id="portfolio-preview" className="bg-[#09090b] py-24 border-b border-zinc-800">
           <Reveal y={15}>
             <SectionHeading
               align="center"
@@ -355,7 +345,7 @@ const EnterpriseServicePage = ({ service }) => {
       )}
 
       {/* 9. FAQs Accordion */}
-      <Section id="faq" className="bg-[#0c1322] border-b border-white/5 py-24 bg-dot-matrix">
+      <Section id="faq" className="bg-zinc-950/45 border-b border-zinc-800 py-24 bg-dot-matrix">
         <Reveal y={15}>
           <SectionHeading
             align="center"
@@ -372,27 +362,23 @@ const EnterpriseServicePage = ({ service }) => {
       </Section>
 
       {/* 10. CTA Block */}
-      <section className="bg-slate-950 py-20 sm:py-24">
+      <section className="bg-zinc-950 py-20 sm:py-24 border-t border-zinc-800">
         <Container>
           <Reveal y={20}>
-            <div className="relative overflow-hidden rounded-3xl border border-white/5 px-8 py-16 text-center text-white sm:px-12 sm:py-20 shadow-2xl bg-grid-saas">
-              <div className="pointer-events-none absolute inset-0 opacity-40 animate-pulse-slow" aria-hidden="true">
-                <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-brand-cyan/5 blur-2xl" />
-                <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-brand-blue/5 blur-2xl" />
-              </div>
+            <div className="relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 px-8 py-16 text-center text-white sm:px-12 sm:py-20 shadow-sm bg-grid-saas">
               <div className="relative mx-auto max-w-2xl">
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-white font-display">
+                <h2 className="text-2xl font-bold tracking-tight sm:text-3xl text-white font-display">
                   {service.ctaTitle || "Scale your website's performance"}
                 </h2>
-                <p className="mt-4 text-xs text-slate-400 sm:text-sm">
+                <p className="mt-4 text-xs text-zinc-450 sm:text-sm">
                   {service.ctaDesc || "Get in touch with our web engineers to audit your site's speed and outline a headless roadmap."}
                 </p>
                 <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-                  <Button as="a" href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" className="btn-saas-primary px-8 py-3 rounded-full text-white font-bold">
+                  <Button as="a" href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" className="btn-saas-primary px-8 py-3.5 rounded-md font-bold text-zinc-950">
                     {service.ctaButton || "Book Discovery Session"}
                     <Icon name="calendar" className="h-4 w-4" strokeWidth={2} />
                   </Button>
-                  <Button as="a" href="/contact" size="lg" className="btn-saas-secondary rounded-full px-8">
+                  <Button as="a" href="/contact" className="btn-saas-secondary rounded-md px-8">
                     Send Us a Message
                   </Button>
                 </div>

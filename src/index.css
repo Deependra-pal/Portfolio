@@ -5,31 +5,26 @@
   --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
   
-  /* Brand Accent Colors - Ocean Cosmic Steel Navy Theme */
-  --color-slate-950: #080c16; /* Canvas Cosmic Midnight Navy */
-  --color-slate-900: #111a30; /* Card Steel Navy Surface */
-  --color-slate-800: #1c2a4a; /* High Contrast Border Navy */
+  /* Brand Accent Colors - Vercel / Linear Minimal Zinc Theme */
+  --color-slate-950: #09090b; /* Pure Zinc-950 Black */
+  --color-slate-900: #121214; /* Zinc-900 Slate Card Surface */
+  --color-slate-800: #27272a; /* Zinc-800 Fine Border Line */
   
-  --color-brand-emerald: #10b981; /* High Uptime Emerald */
-  --color-brand-cyan: #38bdf8; /* Ocean Sky Blue */
-  --color-brand-blue: #4f46e5; /* Royal Indigo */
-  --color-brand-rose: #f43f5e;
-  
-  /* Animations */
-  --animate-pulse-slow: pulse 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --color-brand-cyan: #3b82f6; /* Subtle Blue accent link */
+  --color-brand-rose: #ef4444;
 }
 
 /* Base resets & styles */
 html {
   scroll-behavior: smooth;
-  background-color: #080c16;
-  color: #f3f4f6;
+  background-color: #09090b;
+  color: #f4f4f5; /* Zinc 100 */
 }
 
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  background-color: #080c16;
+  background-color: #09090b;
   overflow-x: hidden;
 }
 
@@ -38,101 +33,91 @@ h1, h2, h3, h4, .font-display {
 }
 
 ::selection {
-  background-color: rgba(56, 189, 248, 0.3);
+  background-color: #27272a;
   color: #ffffff;
 }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #080c16;
+  background: #09090b;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1c2a4a;
+  background: #27272a;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2b3e6c;
+  background: #3f3f46;
 }
 
-/* 1. SaaS Glow Grid Background */
+/* Minimal Grid divider lines */
 .bg-grid-saas {
-  background-size: 60px 60px;
+  background-size: 50px 50px;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
 }
 
-/* 2. High Contrast SaaS Cards */
+/* 2. Flat Minimal Cards (No glows, no glass filters) */
 .saas-card {
-  background-color: #111a30;
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  border-radius: 20px;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background-color: #09090b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .saas-card:hover {
-  border-color: rgba(56, 189, 248, 0.35);
-  background-color: #16223f;
-  box-shadow: 0 12px 40px rgba(56, 189, 248, 0.06);
-  transform: translateY(-3px);
+  border-color: #3f3f46;
+  background-color: #121214;
 }
 
-/* Pill Button Styles */
+/* Button Styles - Vercel / Linear Style */
 .btn-saas-primary {
-  background-image: linear-gradient(135deg, #38bdf8 0%, #4f46e5 100%);
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #09090b;
   font-family: var(--font-display);
   font-weight: 600;
-  border-radius: 9999px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
+  border-radius: 6px;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
 .btn-saas-primary:hover {
-  opacity: 0.95;
-  box-shadow: 0 6px 24px rgba(56, 189, 248, 0.4);
-  transform: translateY(-1px);
+  background-color: #e4e4e7;
 }
 
 .btn-saas-secondary {
-  background-color: #111a30;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #f3f4f6;
+  background-color: transparent;
+  border: 1px solid #27272a;
+  color: #ffffff;
   font-family: var(--font-display);
   font-weight: 600;
-  border-radius: 9999px;
-  transition: all 0.3s ease;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-saas-secondary:hover {
-  background-color: #16223f;
-  border-color: rgba(255, 255, 255, 0.15);
-  transform: translateY(-1px);
+  background-color: #121214;
+  border-color: #3f3f46;
 }
 
 /* Gradient Text styles */
 .gradient-saas-text {
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-image: linear-gradient(135deg, #ffffff 30%, #93c5fd 70%, #38bdf8 100%);
+  color: #ffffff; /* Solid White */
 }
 
-/* Rounded square badge tags */
+/* Clean square tags */
 .saas-badge {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  padding: 6px 14px;
-  border-radius: 9999px;
-  background-color: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
+  padding: 5px 12px;
+  border-radius: 4px;
+  background-color: #121214;
+  border: 1px solid #27272a;
+  color: #a1a1aa;
 }

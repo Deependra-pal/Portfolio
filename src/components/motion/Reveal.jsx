@@ -47,14 +47,16 @@ const Reveal = ({
           duration,
           delay,
           ease: 'power2.out',
+          clearProps: 'opacity,visibility,transform',
           scrollTrigger: {
             trigger: ref.current,
-            start: 'top 88%',
+            start: 'top 95%',
             once: true,
           },
         }
       );
     }, ref);
+
 
     return () => ctx.revert();
   }, []); // [] is intentional — see notes above

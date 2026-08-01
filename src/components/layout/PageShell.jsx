@@ -13,8 +13,10 @@ import ScrollToTop from './ScrollToTop';
 import CustomCursor from '../common/CustomCursor';
 import ThemeSwitcher from '../common/ThemeSwitcher';
 import PageTransition from '../motion/PageTransition';
+import CursorGlow from '../motion/CursorGlow';
 
 const PageShell = () => {
+
   useEffect(() => {
     // Initialize Lenis smooth scroll
     const lenis = new Lenis({
@@ -47,6 +49,8 @@ const PageShell = () => {
       <ScrollToTop />
       <CustomCursor />
       <Navbar />
+
+
       <main className="flex-grow">
         <PageTransition>
           <Outlet />

@@ -31,11 +31,23 @@ const SocialIconButton = ({ social }) => {
       return "#c5e32b"; // forest (default)
     };
 
+    const onMouseMove = (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = (e.clientX - (rect.left + rect.width / 2)) * 0.35;
+      const y = (e.clientY - (rect.top + rect.height / 2)) * 0.35;
+      gsap.to(btn, {
+        x,
+        y,
+        duration: 0.25,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
     const onEnter = () => {
       const accent = getAccent();
       gsap.to(btn, {
         y: -4,
-        // Background colour intentionally NOT changed — keeps button clean on all themes
         borderColor: `${accent}55`,
         boxShadow: `0 0 18px ${accent}22, 0 6px 20px rgba(0,0,0,0.25)`,
         duration: 0.3,
@@ -43,7 +55,8 @@ const SocialIconButton = ({ social }) => {
         overwrite: "auto",
       });
       gsap.to(icon, {
-        scale: 1.08,
+        scale: 1.15,
+        rotate: 8,
         color: accent,
         duration: 0.3,
         ease: "power3.out",
@@ -53,15 +66,17 @@ const SocialIconButton = ({ social }) => {
 
     const onLeave = () => {
       gsap.to(btn, {
+        x: 0,
         y: 0,
         borderColor: "rgba(255, 255, 255, 0.10)",
         boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-        duration: 0.35,
-        ease: "power3.out",
+        duration: 0.5,
+        ease: "elastic.out(1.1, 0.4)",
         overwrite: "auto",
       });
       gsap.to(icon, {
         scale: 1,
+        rotate: 0,
         color: "#a1a1aa",
         duration: 0.35,
         ease: "power3.out",
@@ -69,13 +84,18 @@ const SocialIconButton = ({ social }) => {
       });
     };
 
+    btn.addEventListener("mousemove", onMouseMove);
+
+
     btn.addEventListener("mouseenter", onEnter);
     btn.addEventListener("mouseleave", onLeave);
 
     return () => {
+      btn.removeEventListener("mousemove", onMouseMove);
       btn.removeEventListener("mouseenter", onEnter);
       btn.removeEventListener("mouseleave", onLeave);
     };
+
   }, []);
 
 

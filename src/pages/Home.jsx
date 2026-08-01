@@ -32,6 +32,8 @@ import AnimatedCounter from '../components/motion/AnimatedCounter';
 import TiltCard from '../components/motion/TiltCard';
 import Magnetic from '../components/motion/Magnetic';
 import ProjectModal from '../components/common/ProjectModal';
+import TextReveal from '../components/motion/TextReveal';
+
 
 
 // ─── Module-level constants ────────────────────────────────────────────────────
@@ -219,15 +221,43 @@ const Home = () => {
         });
       }
 
-      // 5. PROJECTS — stagger reveal
-      animateStaggeredReveal('.project-anim-card', {
-        y: 35,
-        duration: 1.0,
-        stagger: 0.15,
-        ease: 'expo.out',
-        trigger: projectsGridRef.current,
-        start: 'top 80%',
-      });
+      // 5. PROJECTS — slide-in from the right + scroll-driven parallax
+      const projectCards = gsap.utils.toArray('.project-anim-card');
+      if (projectCards.length > 0 && projectsGridRef.current) {
+        // Entrance animation: cards slide in from the right
+        gsap.fromTo(
+          projectCards,
+          { opacity: 0, x: 90, y: 25 },
+          {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            duration: 1.0,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: projectsGridRef.current,
+              start: 'top 80%',
+              once: true,
+            },
+          }
+        );
+
+        // Scroll-driven subtle vertical parallax scrub per card
+        projectCards.forEach((card, idx) => {
+          gsap.to(card, {
+            yPercent: idx % 2 === 0 ? -6 : 6,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 0.5,
+            },
+          });
+        });
+      }
+
 
       // 6. TESTIMONIALS — reveal sweep
       animateStaggeredReveal(testimonialsRef.current, {
@@ -402,9 +432,13 @@ const Home = () => {
         <div className="relative z-10 max-w-[1400px] mx-auto mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between px-4">
           <div className="max-w-2xl">
             <span className="saas-badge bg-white/5 text-[#c5e32b] border-white/10">Capabilities</span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-5xl text-white font-display">
-              Asymmetric Bento services.
-            </h2>
+            <TextReveal
+              text="Asymmetric Bento services."
+              variant="skew"
+              stagger={0.06}
+              className="mt-4 text-3xl font-bold tracking-tight sm:text-5xl text-white font-display"
+            />
+
           </div>
           <div>
             <Link
@@ -595,10 +629,14 @@ const Home = () => {
         <Container className="relative z-10 mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between text-left">
           <div>
             <span className="saas-badge bg-white/5 text-teal-400 border-white/10">Portfolio</span>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl text-white font-display">
-              Shipped systems in action.
-            </h2>
+            <TextReveal
+              text="Shipped systems in action."
+              variant="perspective"
+              stagger={0.06}
+              className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl text-white font-display"
+            />
           </div>
+
 
           {/* Category Filter Navigation */}
           <div className="flex flex-wrap gap-2 relative z-20">
@@ -607,11 +645,10 @@ const Home = () => {
                 key={category}
                 type="button"
                 onClick={() => setActiveCategory(category)}
-                className={`rounded-full px-5 py-2 text-xxs font-bold uppercase tracking-wider transition-colors duration-200 ${
-                  activeCategory === category
+                className={`rounded-full px-5 py-2 text-xxs font-bold uppercase tracking-wider transition-colors duration-200 ${activeCategory === category
                     ? 'bg-[#c5e32b] text-zinc-950 shadow-md font-extrabold'
                     : 'bg-white/5 text-zinc-300 hover:bg-white/10 hover:text-white'
-                }`}
+                  }`}
               >
                 {category}
               </button>
@@ -625,9 +662,8 @@ const Home = () => {
             <div
               key={project.id}
               onClick={() => setSelectedProject(project)}
-              className={`group glass-card cursor-pointer overflow-hidden flex flex-col justify-between project-anim-card opacity-0 ${
-                idx % 3 === 0 ? 'md:col-span-2 aspect-video md:aspect-[2.2/1] p-8 sm:p-10' : 'aspect-square p-6 sm:p-8'
-              }`}
+              className={`group glass-card cursor-pointer overflow-hidden flex flex-col justify-between project-anim-card opacity-0 ${idx % 3 === 0 ? 'md:col-span-2 aspect-video md:aspect-[2.2/1] p-8 sm:p-10' : 'aspect-square p-6 sm:p-8'
+                }`}
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -736,10 +772,14 @@ const Home = () => {
       <Section id="faqs" className="bg-[#f4f2ee] pt-32 pb-32 relative overflow-hidden border-b border-zinc-200">
         <div ref={faqRef} className="relative z-10 text-center max-w-3xl mx-auto mb-14 opacity-0 px-4">
           <span className="saas-badge bg-zinc-200 text-zinc-850 border-zinc-300/60 font-semibold">FAQ</span>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl text-zinc-950 font-display">
-            Answers to cooperation queries
-          </h2>
+          <TextReveal
+            text="Answers to cooperation queries"
+            variant="blur"
+            stagger={0.06}
+            className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl text-zinc-950 font-display justify-center"
+          />
         </div>
+
         <div className="relative z-10 px-4">
           <FAQ faqs={HOME_FAQS} />
         </div>

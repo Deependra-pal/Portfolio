@@ -3,7 +3,10 @@ import Section from "../components/ui/Section";
 import SectionHeading from "../components/ui/SectionHeading";
 import Icon from "../components/ui/Icon";
 import Reveal from "../components/motion/Reveal";
+import TiltCard from "../components/motion/TiltCard";
+import TextReveal from "../components/motion/TextReveal";
 import { offices } from "../data/company";
+
 
 const About = () => {
   const milestones = [
@@ -193,42 +196,76 @@ const About = () => {
       </Section>
 
       {/* 6. Global Presence (Obsidian Deep - Dark) */}
-      <Section id="offices" className="bg-[#030f0d] pt-24 pb-48 border-b border-white/5">
-        <Reveal y={15}>
-          <SectionHeading
-            align="center"
-            eyebrow="Global Presence"
-            title="Administrative centers"
-            description="Administrative offices coordinating active developer timelines."
-            className="mb-16"
-            invert={true}
-          />
-        </Reveal>
+      <Section id="offices" className="bg-[#030f0d] pt-24 pb-48 border-b border-white/5 relative overflow-hidden">
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 text-white">
+        {/* Ambient background glow grid */}
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_50%,rgba(197,227,43,0.03)_0%,transparent_60%)] z-0" />
+
+        <div className="relative z-10 text-center max-w-3xl mx-auto mb-16 px-4">
+          <span className="saas-badge bg-white/5 text-teal-350 border-white/10 select-none">
+            Global Presence &bull; 9 Regional Hubs
+          </span>
+          <TextReveal
+            text="Administrative centers"
+            variant="perspective"
+            stagger={0.06}
+            className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl text-white font-display justify-center"
+          />
+          <p className="mt-4 text-sm text-zinc-400 font-semibold max-w-xl mx-auto">
+            Administrative hubs & technical coordination nodes scaling engineer delivery across international time zones.
+          </p>
+        </div>
+
+        <div className="relative z-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 text-white">
           {offices.map((off, idx) => (
-            <Reveal key={off.city} y={15} delay={idx * 0.06}>
-              <div className="glass-card p-6 flex flex-col justify-between h-full border-white/10 rounded-2xl shadow-2xl neon-glow-teal">
-                <div>
-                  <span className="saas-badge rounded-md bg-white/5 text-teal-350 border-white/5">
-                    {off.region} Region
-                  </span>
-                  <h3 className="mt-4 text-base font-bold text-white flex items-center gap-2 font-display">
-                    <Icon name="pin" className="h-4 w-4 text-[#c5e32b]" />
-                    {off.city} Office
-                  </h3>
-                  <p className="mt-2 text-xxs text-zinc-400 leading-relaxed font-semibold">
-                    {off.role || "Technical Coordination & Operations Center"}
-                  </p>
+            <Reveal key={off.city} y={15} delay={idx * 0.08}>
+              <TiltCard maxTilt={10} scale={1.02} glare={true} className="h-full">
+                <div className="glass-card p-6 flex flex-col justify-between h-full border-white/10 rounded-2xl shadow-2xl neon-glow-teal relative overflow-hidden group">
+                  
+                  <div>
+                    {/* Top status bar: Region tag + Live Node Ping */}
+                    <div className="flex items-center justify-between">
+                      <span className="saas-badge rounded-md bg-white/5 text-teal-350 border-white/5 text-[9px]">
+                        {off.region} Region
+                      </span>
+                      
+                      <span className="flex items-center gap-1.5 font-mono text-[8px] text-[#c5e32b] bg-[#c5e32b]/10 border border-[#c5e32b]/20 px-2 py-0.5 rounded-full">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="status-ping absolute inline-flex h-full w-full rounded-full bg-[#c5e32b] opacity-75" />
+                          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#c5e32b]" />
+                        </span>
+                        ACTIVE NODE
+                      </span>
+                    </div>
+
+                    <h3 className="mt-5 text-lg font-extrabold text-white flex items-center gap-2.5 font-display group-hover:text-[#c5e32b] transition-colors">
+                      <span className="grid h-7 w-7 place-items-center rounded-lg bg-teal-950/50 border border-teal-800/40 text-[#c5e32b] shrink-0">
+                        <Icon name="pin" className="h-3.5 w-3.5" />
+                      </span>
+                      {off.city} Office
+                    </h3>
+
+                    <p className="mt-3 text-xs text-zinc-350 leading-relaxed font-semibold">
+                      {off.role || "Technical Coordination & Operations Hub"}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 border-t border-white/5 pt-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-zinc-500 font-display">Inquiries</p>
+                      <p className="mt-0.5 text-xs text-[#c5e32b] font-mono">info@probeyservices.com</p>
+                    </div>
+                    <span className="text-[10px] text-teal-400 font-mono font-bold uppercase">
+                      24/7 Ops
+                    </span>
+                  </div>
+
                 </div>
-                <div className="mt-6 border-t border-white/5 pt-4">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-display">Contact</p>
-                  <p className="mt-1 text-xs text-[#c5e32b] font-mono">info@probeyservices.com</p>
-                </div>
-              </div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
+
       </Section>
     </div>
   );

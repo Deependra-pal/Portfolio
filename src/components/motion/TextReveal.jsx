@@ -4,7 +4,7 @@
  *
  * PERFORMANCE:
  * - Operates inside overflow-hidden wrappers on compositor thread.
- * - ScrollTrigger once: true prevents redundant event listeners.
+ * - Clears props after animation completes to guarantee 100% visible text.
  */
 import { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
@@ -24,7 +24,7 @@ const TextReveal = ({
   stagger = 0.04,
   ease = 'power3.out',
   className = '',
-  triggerStart = 'top 85%',
+  triggerStart = 'top 95%',
   ...props
 }) => {
   const containerRef = useRef(null);
@@ -38,28 +38,28 @@ const TextReveal = ({
     const getInitialVars = () => {
       switch (variant) {
         case 'skew':
-          return { y: '120%', skewY: 5, opacity: 0 };
+          return { y: '100%', skewY: 4, opacity: 0 };
         case 'blur':
-          return { y: 20, filter: 'blur(10px)', opacity: 0 };
+          return { y: 15, filter: 'blur(8px)', opacity: 0 };
         case 'perspective':
-          return { y: 35, rotateX: -50, opacity: 0, transformPerspective: 800 };
+          return { y: 25, rotateX: -35, opacity: 0, transformPerspective: 800 };
         case 'mask':
         default:
-          return { y: '105%', opacity: 0 };
+          return { y: '100%', opacity: 0 };
       }
     };
 
     const getFinalVars = () => {
       switch (variant) {
         case 'skew':
-          return { y: '0%', skewY: 0, opacity: 1 };
+          return { y: '0%', skewY: 0, opacity: 1, clearProps: 'transform,opacity' };
         case 'blur':
-          return { y: 0, filter: 'blur(0px)', opacity: 1 };
+          return { y: 0, filter: 'blur(0px)', opacity: 1, clearProps: 'transform,filter,opacity' };
         case 'perspective':
-          return { y: 0, rotateX: 0, opacity: 1 };
+          return { y: 0, rotateX: 0, opacity: 1, clearProps: 'transform,opacity' };
         case 'mask':
         default:
-          return { y: '0%', opacity: 1 };
+          return { y: '0%', opacity: 1, clearProps: 'transform,opacity' };
       }
     };
 

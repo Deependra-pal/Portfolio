@@ -19,7 +19,7 @@
    All three themes defined as CSS custom properties.
    Applied by [data-theme] attribute on <html>.
    ═══════════════════════════════════════════════════════════════════════════════ */
-
+   
 /* ── Theme 1: Forest Dark (Default — current design, unchanged) ─────────────── */
 :root,
 [data-theme="forest"] {
